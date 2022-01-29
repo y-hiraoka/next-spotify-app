@@ -1,16 +1,23 @@
-import { Container, Link } from "@chakra-ui/react";
+import { Container, Link, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { useFollowedArtists } from "../state/spotify-api";
+import NextLink from "next/link";
+import { withAuth } from "../lib/withAuth";
+import { useArtistTopTracks, useFollowedArtists } from "../state/spotify-api";
 
 const Home: NextPage = () => {
-  const { data } = useFollowedArtists({ limit: 10 });
+  const { data } = useFollowedArtists();
 
   return (
     <Container py="8" maxW="container.sm">
-      <Link href="/api/login">Sign in with Spotify</Link>
-      <pre>{JSON.stringify(data?.artists, null, 2)}</pre>
+      <Stack>
+        {data?.artists.items.map((item) => (
+          <NextLink key={item.id} href={`/artists/${item.id}`} passHref>
+            <Link>{item.name}</Link>
+          </NextLink>
+        ))}
+      </Stack>
     </Container>
   );
 };
 
-export default Home;
+export default withAuth(Home);

@@ -1,16 +1,16 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { WebPlaybackProvider } from "../components/WebPlaybackProvider";
-import { AccessTokenProvider } from "../state/token";
+import { SpotifyClientProvider } from "../state/spotify-client";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
-      <AccessTokenProvider>
+      <SpotifyClientProvider>
         <WebPlaybackProvider>
           <Component {...pageProps} />
         </WebPlaybackProvider>
-      </AccessTokenProvider>
+      </SpotifyClientProvider>
     </ChakraProvider>
   );
 }

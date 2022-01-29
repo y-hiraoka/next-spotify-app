@@ -30,7 +30,7 @@ export const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 isString(process.env.SPOTIFY_CLIENT_SECRET);
 export const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 
-export const SPOTIFY_REDIRECT_URI = `http://localhost:3000/callback`;
+export const SPOTIFY_REDIRECT_URI = `http://localhost:3000/api/callback`;
 
 export const SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize";
 

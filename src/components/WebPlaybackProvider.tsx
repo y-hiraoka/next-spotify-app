@@ -1,6 +1,6 @@
 import { ComponentProps, ReactNode, useCallback, VFC } from "react";
 import { WebPlaybackSDK } from "react-spotify-web-playback-sdk";
-import { useAccessToken } from "../state/token";
+import { useAccessToken } from "../state/spotify-client";
 
 export const WebPlaybackProvider: VFC<{ children: ReactNode }> = ({ children }) => {
   const accessToken = useAccessToken();
