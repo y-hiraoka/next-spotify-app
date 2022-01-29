@@ -1,22 +1,31 @@
-import { Container, Link, Stack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Stack, useColorMode } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import NextLink from "next/link";
+import { ArtistCard } from "../components/ArtistLink";
 import { withAuth } from "../lib/withAuth";
-import { useArtistTopTracks, useFollowedArtists } from "../state/spotify-api";
+import { useFollowedArtists } from "../state/spotify-api";
 
 const Home: NextPage = () => {
   const { data } = useFollowedArtists();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Container py="8" maxW="container.sm">
+    <Box p="8">
       <Stack>
-        {data?.artists.items.map((item) => (
-          <NextLink key={item.id} href={`/artists/${item.id}`} passHref>
-            <Link>{item.name}</Link>
-          </NextLink>
-        ))}
+        <Button colorScheme="teal" onClick={toggleColorMode}>
+          {colorMode}
+        </Button>
+        <Heading as="h2" fontSize="xl">
+          Following
+        </Heading>
+        <Box overflowX="auto">
+          <HStack alignItems="flex-start" spacing="4">
+            {data?.artists.items.map((item) => (
+              <ArtistCard key={item.id} artist={item} />
+            ))}
+          </HStack>
+        </Box>
       </Stack>
-    </Container>
+    </Box>
   );
 };
 
