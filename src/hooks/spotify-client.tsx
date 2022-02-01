@@ -1,13 +1,5 @@
 import { Progress } from "@chakra-ui/react";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  VFC,
-} from "react";
+import { createContext, ReactNode, useContext, useMemo, VFC } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import useSWR from "swr";
 import { AccessToken } from "../models/token";
@@ -27,6 +19,7 @@ const SpotifyClientContext = createContext<SpotifyWebApi.SpotifyWebApiJs | undef
 export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }) => {
   const { data: token, error } = useSWR("AccessToken", () => fetchAccessToken(), {
     refreshInterval: 1000 * 60 * 59,
+    refreshWhenHidden: true,
     revalidateOnFocus: false,
     shouldRetryOnError: false,
   });

@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { withAuth } from "../../lib/withAuth";
-import { useArtist } from "../../state/spotify-api";
+import { useArtist } from "../../hooks/spotify-api";
 
 const ArtistPage: NextPage = () => {
   const router = useRouter();
