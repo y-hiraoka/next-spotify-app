@@ -23,3 +23,4 @@ export const useMyTopArtists = createFetchHook("getMyTopArtists");
 export const useMyTopTracks = createFetchHook("getMyTopTracks");
 export const useFeaturedPlaylists = createFetchHook("getFeaturedPlaylists");
 export const useShowEpisodes = createFetchHook("getShowEpisodes");
+export const useMe = createFetchHook("getMe");

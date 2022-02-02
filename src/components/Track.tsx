@@ -1,48 +1,67 @@
 import {
   Box,
-  Grid,
+  HStack,
   Image,
   Skeleton,
+  SkeletonText,
   Stack,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
+import { formatDurationMS } from "../lib/formatDurationMS";
 
-const format = (duration_ms: number): string => {
-  const seconds = Math.floor(duration_ms / 1000) % 60;
-  const minutes = Math.floor(duration_ms / 1000 / 60);
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-};
-
-export const Track: VFC<{ track: SpotifyApi.TrackObjectFull }> = ({ track }) => {
+export const Track: VFC<{
+  index: number;
+  track: SpotifyApi.TrackObjectFull | SpotifyApi.TrackObjectSimplified;
+}> = ({ track, index }) => {
   return (
-    <Grid p="2" gap="3" templateColumns="auto 1fr auto" alignItems="center">
-      <NextLink href={`/albums/${track.album.id}`} passHref>
-        <Box w="10" h="10" as="a">
-          <Image src={track.album.images[0].url} w="10" h="10" alt={track.album.name} />
-        </Box>
-      </NextLink>
-      <Stack spacing="0">
+    <HStack
+      p="2"
+      height="16"
+      spacing="4"
+      _hover={{ bgColor: useColorModeValue("gray.100", "gray.700") }}
+    >
+      <Text as="span" w="5" textAlign="right">
+        {index + 1}
+      </Text>
+      {"album" in track && (
+        <NextLink href={`/albums/${track.album.id}`} passHref>
+          <Box w="10" h="10" as="a">
+            <Image src={track.album.images[0].url} w="10" h="10" alt={track.album.name} />
+          </Box>
+        </NextLink>
+      )}
+      <Stack spacing="0" flex={1}>
         <Text as="div" fontWeight="bold" noOfLines={1} wordBreak="break-all">
           {track.name}
         </Text>
-        <Text as="div" noOfLines={1} wordBreak="break-all" fontSize="sm">
+        <Text
+          as="div"
+          noOfLines={1}
+          wordBreak="break-all"
+          fontSize="sm"
+          color={useColorModeValue("gray.500", "whiteAlpha.800")}
+        >
           {track.artists[0].name}
         </Text>
       </Stack>
-      <Text fontSize="sm">{format(track.duration_ms)}</Text>
-    </Grid>
+      <Text fontSize="sm">{formatDurationMS(track.duration_ms)}</Text>
+    </HStack>
   );
 };
 
-export const PlaylistCardSkeleton: VFC = () => {
+export const TrackSkeleton: VFC<{ hasThumbnail: boolean }> = ({ hasThumbnail }) => {
   return (
-    <Stack borderRadius="lg" p="6" bgColor={useColorModeValue("gray.100", "gray.700")}>
-      <Skeleton height="32" width="32" />
-      <Skeleton height="6" />
-      <Skeleton height="5" />
-    </Stack>
+    <HStack height="16" p="2" spacing="4">
+      <Box w="5" />
+      {hasThumbnail && <Skeleton height="10" width="10" />}
+      <Stack spacing="3" flex={1}>
+        <SkeletonText noOfLines={1} />
+        <SkeletonText noOfLines={1} />
+      </Stack>
+      <SkeletonText noOfLines={1}>00:00</SkeletonText>
+    </HStack>
   );
 };

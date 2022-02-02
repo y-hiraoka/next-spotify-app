@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Stack } from "@chakra-ui/react";
+import { Box, Divider, Heading, HStack, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { ArtistCard, ArtistCardSkeleton } from "../components/ArtistCard";
 import { Header } from "../components/Header";
@@ -10,7 +10,7 @@ import {
   useMyTopTracks,
 } from "../hooks/spotify-api";
 import { PlaylistCard, PlaylistCardSkeleton } from "../components/PlaylistCard";
-import { Track } from "../components/Track";
+import { Track, TrackSkeleton } from "../components/Track";
 
 const Home: NextPage = () => {
   const followedArtists = useFollowedArtists({ limit: 10 });
@@ -60,11 +60,13 @@ const Home: NextPage = () => {
         </Stack>
         <Stack>
           <Heading fontSize="xl">My Top Tracks</Heading>
-          <Box>
-            {myTopTracks.data?.items.map((item) => (
-              <Track key={item.id} track={item} />
-            ))}
-          </Box>
+          <Stack spacing="1">
+            {myTopTracks.data === undefined
+              ? [0, 1, 2, 3, 4, 5].map((i) => <TrackSkeleton key={i} hasThumbnail />)
+              : myTopTracks.data.items.map((item, index) => (
+                  <Track key={item.id} track={item} index={index} />
+                ))}
+          </Stack>
         </Stack>
       </Stack>
     </Box>

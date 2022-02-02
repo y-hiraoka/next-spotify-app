@@ -1,4 +1,4 @@
-import { Container } from "@chakra-ui/react";
+import { Button, Center, Container, Image } from "@chakra-ui/react";
 import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -27,9 +27,19 @@ const Login: NextPage = () => {
   if (token !== undefined) return null;
 
   return (
-    <Container p="10">
-      <Link href={"/api/login" + query}>Sign in with Spotify</Link>
-    </Container>
+    <Center position="fixed" inset={0}>
+      <Button
+        as="a"
+        href={"/api/login" + query}
+        variant="ghost"
+        size="lg"
+        fontSize="2xl"
+        fontWeight="bold"
+        rightIcon={<Image h="8" src="/assets/Spotify_Logo_RGB_Green.png" alt="Spotify" />}
+      >
+        Sign in with
+      </Button>
+    </Center>
   );
 };
 

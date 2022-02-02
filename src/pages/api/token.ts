@@ -50,7 +50,7 @@ const handler: NextApiHandler<AccessToken | void> = async (req, res) => {
     res.send(newToken);
     return;
   } else {
-    nookies.destroy({ res }, "next-spotify-app-session");
+    nookies.destroy({ res }, "next-spotify-app-token");
     res.status(403).send();
   }
 };
