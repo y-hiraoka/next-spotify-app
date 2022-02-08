@@ -1,4 +1,4 @@
-import { Box, Divider, Heading, HStack, Stack } from "@chakra-ui/react";
+import { Box, Heading, HStack, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { ArtistCard, ArtistCardSkeleton } from "../components/ArtistCard";
 import { Header } from "../components/Header";
@@ -6,17 +6,21 @@ import { withAuth } from "../lib/withAuth";
 import {
   useFeaturedPlaylists,
   useFollowedArtists,
+  useMyCurrentPlaybackState,
   useMyTopArtists,
   useMyTopTracks,
 } from "../hooks/spotify-api";
 import { PlaylistCard, PlaylistCardSkeleton } from "../components/PlaylistCard";
 import { Track, TrackSkeleton } from "../components/Track";
+import { PlayerController } from "../components/PlayerController";
+import { BottomNavigation } from "../components/BottomNavigation";
 
 const Home: NextPage = () => {
   const followedArtists = useFollowedArtists({ limit: 10 });
   const featuredPlaylists = useFeaturedPlaylists();
   const myTopArtists = useMyTopArtists();
   const myTopTracks = useMyTopTracks();
+  const playbackState = useMyCurrentPlaybackState();
 
   return (
     <Box>
@@ -69,6 +73,11 @@ const Home: NextPage = () => {
           </Stack>
         </Stack>
       </Stack>
+
+      <Box position="sticky" bottom="0" width="full">
+        <PlayerController />
+        <BottomNavigation />
+      </Box>
     </Box>
   );
 };
