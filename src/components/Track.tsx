@@ -2,6 +2,7 @@ import {
   Box,
   HStack,
   Image,
+  Link,
   Skeleton,
   SkeletonText,
   Stack,
@@ -44,7 +45,9 @@ export const Track: VFC<{
           fontSize="sm"
           color={useColorModeValue("gray.500", "whiteAlpha.800")}
         >
-          {track.artists[0].name}
+          <NextLink href={`/artists/${track.artists[0].id}`} passHref>
+            <Link>{track.artists[0].name}</Link>
+          </NextLink>
         </Text>
       </Stack>
       <Text fontSize="sm">{formatDurationMS(track.duration_ms)}</Text>

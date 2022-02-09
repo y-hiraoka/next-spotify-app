@@ -105,3 +105,13 @@ export const useContainsMySavedTracks = (trackIds: string[]) => {
     client.containsMySavedTracks(trackIds)
   );
 };
+
+type UserPlaylistsQueries = {
+  limit?: number;
+  offset?: number;
+};
+export const useUserPlaylists = (userId?: string, queries: UserPlaylistsQueries = {}) => {
+  return useSpotifyData("UserPlaylists", [userId, queries], (client) =>
+    client.getUserPlaylists(userId, queries)
+  );
+};
