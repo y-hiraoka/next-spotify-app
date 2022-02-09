@@ -9,10 +9,11 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
+import { pagesPath } from "../lib/$path";
 
 export const ArtistCard: VFC<{ artist: SpotifyApi.ArtistObjectFull }> = ({ artist }) => {
   return (
-    <NextLink href={`/artists/${artist.id}`} passHref>
+    <NextLink href={pagesPath.artists._artistId(artist.id).$url()} passHref>
       <Stack
         width="44"
         as="a"

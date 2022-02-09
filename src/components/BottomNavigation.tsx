@@ -9,6 +9,7 @@ import {
   MdOutlineLibraryMusic,
   MdSearch,
 } from "react-icons/md";
+import { pagesPath } from "../lib/$path";
 
 const useLinkColor = (isActive: boolean) =>
   useColorModeValue(
@@ -18,9 +19,9 @@ const useLinkColor = (isActive: boolean) =>
 
 export const BottomNavigation: VFC = () => {
   const router = useRouter();
-  const homeIsActive = router.pathname === "/";
-  const searchIsActive = router.pathname === "/search";
-  const libraryIsActive = router.pathname === "/library";
+  const homeIsActive = router.pathname === pagesPath.$url().pathname;
+  const searchIsActive = router.pathname === pagesPath.search.$url().pathname;
+  const libraryIsActive = router.pathname === pagesPath.library.$url().pathname;
 
   return (
     <Grid
@@ -38,7 +39,7 @@ export const BottomNavigation: VFC = () => {
           </Text>
         </VStack>
       </NextLink>
-      <NextLink href="/search" passHref>
+      <NextLink href={pagesPath.search.$url()} passHref>
         <VStack as="a" spacing="0" py="2" color={useLinkColor(searchIsActive)}>
           <Icon as={MdSearch} fontSize="3xl" />
           <Text as="span" fontSize="xs" fontWeight={searchIsActive ? "bold" : undefined}>
@@ -46,7 +47,7 @@ export const BottomNavigation: VFC = () => {
           </Text>
         </VStack>
       </NextLink>
-      <NextLink href="/library" passHref>
+      <NextLink href={pagesPath.library.$url()} passHref>
         <VStack as="a" spacing="0" py="2" color={useLinkColor(libraryIsActive)}>
           <Icon
             as={libraryIsActive ? MdLibraryMusic : MdOutlineLibraryMusic}

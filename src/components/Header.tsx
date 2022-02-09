@@ -14,6 +14,7 @@ import NextLink from "next/link";
 import { VFC } from "react";
 import { MdLightMode, MdDarkMode, MdLogout, MdPerson } from "react-icons/md";
 import { useMe } from "../hooks/spotify-api";
+import { pagesPath } from "../lib/$path";
 
 export const Header: VFC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -44,7 +45,7 @@ const AccountMenu: VFC = () => {
         <Avatar size="sm" name={data?.display_name} src={data?.images?.at(0)?.url} />
       </MenuButton>
       <MenuList>
-        <NextLink passHref href="/me">
+        <NextLink passHref href={pagesPath.me.$url()}>
           <MenuItem as="a" icon={<Icon fontSize="xl" as={MdPerson} />}>
             Accout
           </MenuItem>
