@@ -16,19 +16,27 @@ import {
   Text,
   useColorModeValue,
   Progress,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Center,
+  Heading,
 } from "@chakra-ui/react";
-import { useCallback, useMemo, VFC } from "react";
+import { useCallback, useState, VFC } from "react";
 import {
   MdFavorite,
   MdFavoriteBorder,
   MdPause,
   MdPlayArrow,
+  MdShuffle,
   MdSkipNext,
   MdSkipPrevious,
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
-import { useContainsMySavedTracks } from "../hooks/spotify-api";
 import { useSpotifyClient } from "../hooks/spotify-client";
+import { useIsSavedTrack } from "../hooks/useSavedTrack";
+import { formatDurationMS } from "../lib/formatDurationMS";
 
 export const MobileController: VFC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,27 +71,9 @@ const ControllerBar: VFC = () => {
   const playbackState = usePlaybackState(true, 500);
   const currentTrack = playbackState?.track_window.current_track;
 
-  const spotifyClient = useSpotifyClient();
   const spotifyPlayer = useSpotifyPlayer();
 
-  const currentPlayingIds = useMemo(
-    () => (currentTrack?.id ? [currentTrack.id] : []),
-    [currentTrack?.id]
-  );
-
-  const { data: ContainsMySavedTracksData, mutate: mutateContainsMySavedTracks } =
-    useContainsMySavedTracks(currentPlayingIds);
-
-  const isSavedTrack = !!ContainsMySavedTracksData?.[0];
-
-  const toggleSavedTrack = useCallback(async () => {
-    if (isSavedTrack) {
-      await spotifyClient.removeFromMySavedTracks(currentPlayingIds);
-    } else {
-      await spotifyClient.addToMySavedTracks(currentPlayingIds);
-    }
-    mutateContainsMySavedTracks((prev) => [!prev?.[0]]);
-  }, [isSavedTrack, mutateContainsMySavedTracks, spotifyClient, currentPlayingIds]);
+  const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
   return (
     <Box borderRadius="md" overflow="hidden">
@@ -157,56 +147,158 @@ const ControllerDrawer: VFC<{
   playbackState: Spotify.PlaybackState;
 }> = ({ isOpen, onClose, playbackState }) => {
   const currentTrack = playbackState.track_window.current_track;
+  const spotifyPlayer = useSpotifyPlayer();
+  const spotifyClient = useSpotifyClient();
+  const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} placement="bottom" size="full">
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Now Playing</DrawerHeader>
+        <DrawerHeader>
+          <Text
+            as="h3"
+            fontSize="md"
+            noOfLines={1}
+            wordBreak="break-all"
+            paddingRight="6"
+          >
+            {currentTrack.artists[0].name}
+          </Text>
+        </DrawerHeader>
         <DrawerBody>
-          <Image src={currentTrack.album.images[0].url} alt={currentTrack.album.name} />
+          <Center h="full" maxH="full">
+            <Box h="full" maxW="96" maxH="full">
+              <Image
+                w="full"
+                h="full"
+                objectFit="contain"
+                src={currentTrack.album.images[0].url}
+                alt={currentTrack.album.name}
+              />
+            </Box>
+          </Center>
         </DrawerBody>
-        <DrawerFooter justifyContent="center">
-          <HStack>
-            <IconButton
-              aria-label="skip previous"
-              color="whiteAlpha.800"
-              borderRadius="full"
-              variant="ghost"
-              icon={<Icon fontSize="2xl" as={MdSkipPrevious} />}
-            />
-            <IconButton
-              aria-label="skip previous"
-              color="whiteAlpha.800"
-              borderRadius="full"
-              variant="ghost"
-              icon={<Icon fontSize="2xl" as={MdSkipPrevious} />}
-            />
-            <IconButton
-              color="black"
-              bgColor="gray.100"
-              aria-label="play"
-              borderRadius="full"
-              icon={<Icon fontSize="2xl" as={MdPlayArrow} />}
-            />
-            <IconButton
-              aria-label="skip next"
-              color="whiteAlpha.800"
-              borderRadius="full"
-              variant="ghost"
-              icon={<Icon fontSize="2xl" as={MdSkipNext} />}
-            />
-            <IconButton
-              aria-label="skip previous"
-              color="whiteAlpha.800"
-              borderRadius="full"
-              variant="ghost"
-              icon={<Icon fontSize="2xl" as={MdSkipPrevious} />}
-            />
-          </HStack>
+        <DrawerFooter>
+          <Stack w="full">
+            <Heading as="h1" fontSize="2xl">
+              {currentTrack.name}
+            </Heading>
+            <Heading as="h2" noOfLines={1} fontSize="lg">
+              {currentTrack.artists[0].name}
+            </Heading>
+            <SeekBar />
+            <HStack justifyContent="space-between" w="full">
+              <IconButton
+                role="checkbox"
+                aria-label="toggle saved"
+                aria-checked={isSavedTrack}
+                icon={
+                  <Icon
+                    as={isSavedTrack ? MdFavorite : MdFavoriteBorder}
+                    fontSize="3xl"
+                  />
+                }
+                color={isSavedTrack ? "green.600" : undefined}
+                onClick={toggleSavedTrack}
+                variant="ghost"
+              />
+              <HStack spacing="1">
+                <IconButton
+                  aria-label="skip previous"
+                  borderRadius="full"
+                  variant="ghost"
+                  size="lg"
+                  icon={<Icon fontSize="3xl" as={MdSkipPrevious} />}
+                />
+                <IconButton
+                  aria-label="toggle play"
+                  borderRadius="full"
+                  height="16"
+                  width="16"
+                  icon={
+                    <Icon
+                      fontSize="4xl"
+                      as={playbackState.paused ? MdPlayArrow : MdPause}
+                    />
+                  }
+                  onClick={spotifyPlayer?.togglePlay}
+                />
+                <IconButton
+                  aria-label="skip next"
+                  borderRadius="full"
+                  variant="ghost"
+                  size="lg"
+                  icon={<Icon fontSize="3xl" as={MdSkipNext} />}
+                />
+              </HStack>
+              <IconButton
+                role="checkbox"
+                aria-label="toggle shuffle"
+                aria-checked={playbackState.shuffle}
+                variant="ghost"
+                color={playbackState.shuffle ? "green.600" : undefined}
+                icon={<Icon fontSize="3xl" as={MdShuffle} />}
+                onClick={() => spotifyClient.setShuffle(!playbackState.shuffle)}
+              />
+            </HStack>
+          </Stack>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  );
+};
+
+const SeekBar: VFC = () => {
+  const playbackState = usePlaybackState(true, 500);
+  const spotifyPlayer = useSpotifyPlayer();
+
+  const [isSeeking, setSeeking] = useState(false);
+  const [seekingPosition, setSeekingPosition] = useState(0);
+
+  const handleChangeStart = useCallback(() => {
+    setSeeking(true);
+  }, []);
+
+  const handleChange = useCallback((value: number) => {
+    setSeekingPosition(value);
+  }, []);
+
+  const handleChangeEnd = useCallback(
+    (value: number) => {
+      setSeeking(false);
+      spotifyPlayer?.seek(value);
+    },
+    [spotifyPlayer]
+  );
+
+  return (
+    <Box width="full">
+      <Slider
+        aria-label="seek playback"
+        size="sm"
+        colorScheme="green"
+        value={isSeeking ? seekingPosition : playbackState?.position}
+        max={playbackState?.duration}
+        focusThumbOnChange={false}
+        onChangeStart={handleChangeStart}
+        onChange={handleChange}
+        onChangeEnd={handleChangeEnd}
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
+      <HStack justifyContent="space-between" mt="-2">
+        <Text as="span" fontSize="xs">
+          {formatDurationMS(playbackState?.position ?? 0)}
+        </Text>
+        <Text as="span" fontSize="xs">
+          {formatDurationMS(playbackState?.duration ?? 0)}
+        </Text>
+      </HStack>
+    </Box>
   );
 };

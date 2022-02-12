@@ -9,7 +9,7 @@ const Search: NextPage = () => {
 
   return (
     <WithBottom bottom={<ResponsiveBottom />}>
-      <pre>Search</pre>
+      <pre>{JSON.stringify(query.data?.items.map(item => item.track.name), null, 2)}</pre>
     </WithBottom>
   );
 };
