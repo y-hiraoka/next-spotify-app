@@ -34,6 +34,7 @@ import {
   MdSkipPrevious,
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
+import { useWindowSize } from "react-use";
 import { useSpotifyClient } from "../hooks/spotify-client";
 import { useIsSavedTrack } from "../hooks/useSavedTrack";
 import { formatDurationMS } from "../lib/formatDurationMS";
@@ -150,11 +151,11 @@ const ControllerDrawer: VFC<{
   const spotifyPlayer = useSpotifyPlayer();
   const spotifyClient = useSpotifyClient();
   const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
+  const { height } = useWindowSize();
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} placement="bottom" size="full">
-      <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent maxH={height}>
         <DrawerCloseButton />
         <DrawerHeader>
           <Text
@@ -291,7 +292,7 @@ const SeekBar: VFC = () => {
         </SliderTrack>
         <SliderThumb />
       </Slider>
-      <HStack justifyContent="space-between" mt="-2">
+      <HStack justifyContent="space-between" mt="-1">
         <Text as="span" fontSize="xs">
           {formatDurationMS(playbackState?.position ?? 0)}
         </Text>
