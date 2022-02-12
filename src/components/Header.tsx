@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Flex,
   HStack,
   Icon,
@@ -11,16 +12,23 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { VFC } from "react";
+import { VFC, ReactNode } from "react";
 import { MdLightMode, MdDarkMode, MdLogout, MdPerson } from "react-icons/md";
 import { useMe } from "../hooks/spotify-api";
 import { pagesPath } from "../lib/$path";
 
-export const Header: VFC = () => {
+export const Header: VFC<{ children?: ReactNode }> = ({ children }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Flex as="header" height="20" px="4" alignItems="center" justifyContent="flex-end">
+    <Flex
+      as="header"
+      height="20"
+      px="4"
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      <Box>{children}</Box>
       <HStack>
         <IconButton
           aria-label="toggle theme color"

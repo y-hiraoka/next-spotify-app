@@ -6,29 +6,27 @@ import { withAuth } from "../lib/withAuth";
 import {
   useFeaturedPlaylists,
   useFollowedArtists,
-  useMyCurrentPlaybackState,
   useMyTopArtists,
   useMyTopTracks,
 } from "../hooks/spotify-api";
 import { PlaylistCard, PlaylistCardSkeleton } from "../components/PlaylistCard";
 import { Track, TrackSkeleton } from "../components/Track";
-import { PlayerController } from "../components/PlayerController";
-import { BottomNavigation } from "../components/BottomNavigation";
+import { WithBottom } from "../components/WithBottom";
+import { ResponsiveBottom } from "../components/ResponsiveBottom";
 
 const Home: NextPage = () => {
   const followedArtists = useFollowedArtists({ limit: 10 });
   const featuredPlaylists = useFeaturedPlaylists();
   const myTopArtists = useMyTopArtists();
   const myTopTracks = useMyTopTracks();
-  const playbackState = useMyCurrentPlaybackState();
 
   return (
-    <Box>
+    <WithBottom bottom={<ResponsiveBottom />}>
       <Header />
       <Stack px="4" spacing="8">
         <Stack>
           <Heading fontSize="xl">Following</Heading>
-          <Box overflowX="auto">
+          <Box overflowX="auto" w="full">
             <HStack alignItems="flex-start" spacing="5">
               {followedArtists.data === undefined
                 ? [0, 1, 2, 3, 4, 5].map((i) => <ArtistCardSkeleton key={i} />)
@@ -40,7 +38,7 @@ const Home: NextPage = () => {
         </Stack>
         <Stack>
           <Heading fontSize="xl">Featured Playlists</Heading>
-          <Box overflowX="auto">
+          <Box overflowX="auto" w="full">
             <HStack alignItems="flex-start" spacing="5">
               {featuredPlaylists.data === undefined
                 ? [0, 1, 2, 3, 4, 5].map((i) => <PlaylistCardSkeleton key={i} />)
@@ -52,7 +50,7 @@ const Home: NextPage = () => {
         </Stack>
         <Stack>
           <Heading fontSize="xl">My Top Artists</Heading>
-          <Box overflowX="auto">
+          <Box overflowX="auto" w="full">
             <HStack alignItems="flex-start" spacing="5">
               {myTopArtists.data === undefined
                 ? [0, 1, 2, 3, 4, 5].map((i) => <ArtistCardSkeleton key={i} />)
@@ -73,12 +71,7 @@ const Home: NextPage = () => {
           </Stack>
         </Stack>
       </Stack>
-
-      <Box position="sticky" bottom="0" width="full">
-        <PlayerController />
-        <BottomNavigation />
-      </Box>
-    </Box>
+    </WithBottom>
   );
 };
 

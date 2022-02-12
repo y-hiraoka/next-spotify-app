@@ -3,7 +3,7 @@ import { useBreakpointValue as useChakraBreakpointValue } from "@chakra-ui/react
 
 type Values<T> = (Record<string, T> | T[]) & {
   base: any;
-}
+};
 
 /**
  * Hook that exposes the result of Chakra UI `useBreakpointValue` but hydrates the result
@@ -19,7 +19,7 @@ type Values<T> = (Record<string, T> | T[]) & {
  *
  * @param values Values as accepted in `useBreakpointValue`.
  */
-function useBreakpointValue<T = any>(values: Values<T>): T | undefined {
+function useBreakpointValue<T = any>(values: Values<T>): T {
   const firstRender = useRef(true);
   const [, setTick] = useState(0);
 

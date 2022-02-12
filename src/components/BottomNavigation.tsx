@@ -28,8 +28,7 @@ export const BottomNavigation: VFC = () => {
       width="full"
       templateColumns="repeat(3, 1fr)"
       bgColor={useColorModeValue("gray.200", "gray.900")}
-      position="sticky"
-      bottom="0"
+      px="2"
     >
       <NextLink href="/" passHref>
         <VStack as="a" spacing="0" py="2" color={useLinkColor(homeIsActive)}>
