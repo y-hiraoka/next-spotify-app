@@ -1,7 +1,8 @@
 import { Grid, Icon, Text, useColorModeValue, VStack } from "@chakra-ui/react";
-import NextLink from "next/link";
+import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { useRouter } from "next/router";
 import { VFC } from "react";
+import { IconType } from "react-icons";
 import {
   MdHome,
   MdLibraryMusic,
@@ -30,33 +31,42 @@ export const BottomNavigation: VFC = () => {
       bgColor={useColorModeValue("gray.200", "gray.900")}
       px="2"
     >
-      <NextLink href="/" passHref>
-        <VStack as="a" spacing="0" py="2" color={useLinkColor(homeIsActive)}>
-          <Icon as={homeIsActive ? MdHome : MdOutlineHome} fontSize="3xl" />
-          <Text as="span" fontSize="xs" fontWeight={homeIsActive ? "bold" : undefined}>
-            Home
-          </Text>
-        </VStack>
-      </NextLink>
-      <NextLink href={pagesPath.search.$url()} passHref>
-        <VStack as="a" spacing="0" py="2" color={useLinkColor(searchIsActive)}>
-          <Icon as={MdSearch} fontSize="3xl" />
-          <Text as="span" fontSize="xs" fontWeight={searchIsActive ? "bold" : undefined}>
-            Search
-          </Text>
-        </VStack>
-      </NextLink>
-      <NextLink href={pagesPath.library.$url()} passHref>
-        <VStack as="a" spacing="0" py="2" color={useLinkColor(libraryIsActive)}>
-          <Icon
-            as={libraryIsActive ? MdLibraryMusic : MdOutlineLibraryMusic}
-            fontSize="3xl"
-          />
-          <Text as="span" fontSize="xs" fontWeight={libraryIsActive ? "bold" : undefined}>
-            My Library
-          </Text>
-        </VStack>
-      </NextLink>
+      <NavigationLink
+        label="Home"
+        href={pagesPath.$url()}
+        icon={homeIsActive ? MdHome : MdOutlineHome}
+        isActive={homeIsActive}
+      />
+      <NavigationLink
+        label="Search"
+        href={pagesPath.search.$url()}
+        icon={MdSearch}
+        isActive={searchIsActive}
+      />
+      <NavigationLink
+        label="My Library"
+        href={pagesPath.library.$url()}
+        icon={libraryIsActive ? MdLibraryMusic : MdOutlineLibraryMusic}
+        isActive={libraryIsActive}
+      />
     </Grid>
+  );
+};
+
+const NavigationLink: VFC<{
+  icon: IconType;
+  isActive: boolean;
+  href: NextLinkProps["href"];
+  label: string;
+}> = ({ href, isActive, icon, label }) => {
+  return (
+    <NextLink href={href} passHref>
+      <VStack as="a" spacing="0" py="1.5" color={useLinkColor(isActive)}>
+        <Icon as={icon} fontSize="2xl" />
+        <Text as="span" fontSize="xs" fontWeight={isActive ? "bold" : undefined}>
+          {label}
+        </Text>
+      </VStack>
+    </NextLink>
   );
 };
