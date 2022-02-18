@@ -2,6 +2,7 @@ import { Box } from "@chakra-ui/react";
 import { VFC } from "react";
 import { useIsMobileSize } from "../hooks/useIsMobileSize";
 import { BottomNavigation } from "./BottomNavigation";
+import { LargerController } from "./LargerController";
 import { MobileController } from "./MobileController";
 
 export const ResponsiveBottom: VFC = () => {
@@ -15,6 +16,6 @@ export const ResponsiveBottom: VFC = () => {
       </Box>
     );
   } else {
-    return null;
+    return <LargerController />;
   }
 };

@@ -115,3 +115,18 @@ export const useUserPlaylists = (userId?: string, queries: UserPlaylistsQueries 
     client.getUserPlaylists(userId, queries)
   );
 };
+
+type TrackQueries = {
+  market?: string;
+};
+export const useTrack = (trackId: string, queries: TrackQueries = {}) => {
+  return useSpotifyData("Track", [trackId, queries], (client) =>
+    client.getTrack(trackId, queries)
+  );
+};
+
+export const useArtistRelatedArtists = (artistId: string) => {
+  return useSpotifyData("ArtistRelatedArtists", [artistId], (client) =>
+    client.getArtistRelatedArtists(artistId)
+  );
+};

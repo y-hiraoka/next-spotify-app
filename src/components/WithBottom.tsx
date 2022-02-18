@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { ReactNode, useEffect, useRef, useState, VFC } from "react";
+import { useIsMobileSize } from "../hooks/useIsMobileSize";
 
 export const WithBottom: VFC<{
   children: ReactNode;
@@ -7,11 +8,12 @@ export const WithBottom: VFC<{
 }> = ({ children, bottom }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [bottomHeight, setBottomHeight] = useState(0);
+  const isMobileSize = useIsMobileSize();
 
   useEffect(() => {
     const bottomRect = bottomRef.current?.getBoundingClientRect();
     setBottomHeight(bottomRect?.height ?? 0);
-  }, []);
+  }, [isMobileSize]);
 
   return (
     <Box h="full">

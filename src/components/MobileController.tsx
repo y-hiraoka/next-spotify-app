@@ -4,7 +4,6 @@ import {
   DrawerBody,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   HStack,
@@ -16,14 +15,10 @@ import {
   Text,
   useColorModeValue,
   Progress,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
   Center,
   Heading,
 } from "@chakra-ui/react";
-import { useCallback, useState, VFC } from "react";
+import { VFC } from "react";
 import {
   MdFavorite,
   MdFavoriteBorder,
@@ -38,13 +33,15 @@ import { useWindowSize } from "react-use";
 import { useSpotifyClient } from "../hooks/spotify-client";
 import { useIsSavedTrack } from "../hooks/useSavedTrack";
 import { formatDurationMS } from "../lib/formatDurationMS";
+import { PlaybackSeekBar } from "./PlaybackSeekBar";
+import { WithPlaybackState } from "./WithPlaybackState";
 
 export const MobileController: VFC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const playbackstate = usePlaybackState();
+  const playbackState = usePlaybackState();
 
   return (
-    playbackstate && (
+    playbackState && (
       <>
         <Box p="2" width="full" position="relative">
           <Box
@@ -61,7 +58,7 @@ export const MobileController: VFC = () => {
         <ControllerDrawer
           isOpen={isOpen}
           onClose={onClose}
-          playbackState={playbackstate}
+          playbackState={playbackState}
         />
       </>
     )
@@ -69,7 +66,7 @@ export const MobileController: VFC = () => {
 };
 
 const ControllerBar: VFC = () => {
-  const playbackState = usePlaybackState(true, 500);
+  const playbackState = usePlaybackState();
   const currentTrack = playbackState?.track_window.current_track;
 
   const spotifyPlayer = useSpotifyPlayer();
@@ -113,30 +110,36 @@ const ControllerBar: VFC = () => {
         </Stack>
         <HStack>
           <IconButton
-            aria-label="like button"
+            role="checkbox"
+            aria-label="toggle saved"
+            aria-checked={isSavedTrack}
             icon={
               <Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="3xl" />
             }
             onClick={toggleSavedTrack}
             variant="ghost"
-            // color="gray.100"
+            color={isSavedTrack ? "green.600" : undefined}
           />
           <IconButton
-            aria-label="like button"
+            aria-label="toggle play"
             icon={
               <Icon as={playbackState?.paused ? MdPlayArrow : MdPause} fontSize="3xl" />
             }
-            onClick={spotifyPlayer?.togglePlay}
+            onClick={() => spotifyPlayer?.togglePlay()}
             variant="ghost"
             // color="gray.100"
           />
         </HStack>
       </HStack>
-      <Progress
-        value={playbackState?.position}
-        max={playbackState?.duration}
-        h="2px"
-        colorScheme="green"
+      <WithPlaybackState
+        render={(playbackState) => (
+          <Progress
+            value={playbackState?.position}
+            max={playbackState?.duration}
+            h="2px"
+            colorScheme="green"
+          />
+        )}
       />
     </Box>
   );
@@ -189,7 +192,21 @@ const ControllerDrawer: VFC<{
             <Heading as="h2" noOfLines={1} fontSize="lg">
               {currentTrack.artists[0].name}
             </Heading>
-            <SeekBar />
+            <WithPlaybackState
+              render={(state) => (
+                <Box width="full">
+                  <PlaybackSeekBar playbackState={state} />
+                  <HStack justifyContent="space-between" mt="-1">
+                    <Text as="span" fontSize="xs">
+                      {formatDurationMS(state?.position ?? 0)}
+                    </Text>
+                    <Text as="span" fontSize="xs">
+                      {formatDurationMS(state?.duration ?? 0)}
+                    </Text>
+                  </HStack>
+                </Box>
+              )}
+            />
             <HStack justifyContent="space-between" w="full">
               <IconButton
                 role="checkbox"
@@ -205,13 +222,14 @@ const ControllerDrawer: VFC<{
                 onClick={toggleSavedTrack}
                 variant="ghost"
               />
-              <HStack spacing="1">
+              <HStack>
                 <IconButton
                   aria-label="skip previous"
                   borderRadius="full"
                   variant="ghost"
                   size="lg"
                   icon={<Icon fontSize="3xl" as={MdSkipPrevious} />}
+                  onClick={() => spotifyPlayer?.previousTrack()}
                 />
                 <IconButton
                   aria-label="toggle play"
@@ -224,7 +242,7 @@ const ControllerDrawer: VFC<{
                       as={playbackState.paused ? MdPlayArrow : MdPause}
                     />
                   }
-                  onClick={spotifyPlayer?.togglePlay}
+                  onClick={() => spotifyPlayer?.togglePlay()}
                 />
                 <IconButton
                   aria-label="skip next"
@@ -232,6 +250,7 @@ const ControllerDrawer: VFC<{
                   variant="ghost"
                   size="lg"
                   icon={<Icon fontSize="3xl" as={MdSkipNext} />}
+                  onClick={() => spotifyPlayer?.nextTrack()}
                 />
               </HStack>
               <IconButton
@@ -248,58 +267,5 @@ const ControllerDrawer: VFC<{
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-};
-
-const SeekBar: VFC = () => {
-  const playbackState = usePlaybackState(true, 500);
-  const spotifyPlayer = useSpotifyPlayer();
-
-  const [isSeeking, setSeeking] = useState(false);
-  const [seekingPosition, setSeekingPosition] = useState(0);
-
-  const handleChangeStart = useCallback(() => {
-    setSeeking(true);
-  }, []);
-
-  const handleChange = useCallback((value: number) => {
-    setSeekingPosition(value);
-  }, []);
-
-  const handleChangeEnd = useCallback(
-    (value: number) => {
-      setSeeking(false);
-      spotifyPlayer?.seek(value);
-    },
-    [spotifyPlayer]
-  );
-
-  return (
-    <Box width="full">
-      <Slider
-        aria-label="seek playback"
-        size="sm"
-        colorScheme="green"
-        value={isSeeking ? seekingPosition : playbackState?.position}
-        max={playbackState?.duration}
-        focusThumbOnChange={false}
-        onChangeStart={handleChangeStart}
-        onChange={handleChange}
-        onChangeEnd={handleChangeEnd}
-      >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb />
-      </Slider>
-      <HStack justifyContent="space-between" mt="-1">
-        <Text as="span" fontSize="xs">
-          {formatDurationMS(playbackState?.position ?? 0)}
-        </Text>
-        <Text as="span" fontSize="xs">
-          {formatDurationMS(playbackState?.duration ?? 0)}
-        </Text>
-      </HStack>
-    </Box>
   );
 };

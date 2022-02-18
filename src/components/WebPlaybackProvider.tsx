@@ -18,7 +18,7 @@ export const WebPlaybackProvider: VFC<{ children: ReactNode }> = ({ children }) 
       <WebPlaybackSDK
         getOAuthToken={getOAuthToken}
         connectOnInitialized
-        deviceName="Yosuke Spotify App"
+        initialDeviceName="Yosuke Spotify App"
       >
         {children}
       </WebPlaybackSDK>

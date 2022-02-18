@@ -20,7 +20,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
-    "react-spotify-web-playback-sdk": "^2.0.0",
+    "react-spotify-web-playback-sdk": "^3.0.1",
     "react-use": "^17.3.2",
     "spotify-web-api-js": "^1.5.2",
     "swr": "^1.2.0",
