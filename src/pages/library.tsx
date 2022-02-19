@@ -1,13 +1,14 @@
 import { NextPage } from "next";
+import { Layout } from "../components/Layout";
 import { ResponsiveBottom } from "../components/ResponsiveBottom";
-import { WithBottom } from "../components/WithBottom";
+import { SideNavigation } from "../components/SideNavigation";
 import { withAuth } from "../lib/withAuth";
 
 const Library: NextPage = () => {
   return (
-    <WithBottom bottom={<ResponsiveBottom />}>
+    <Layout bottom={<ResponsiveBottom />} side={<SideNavigation />}>
       <pre>library</pre>
-    </WithBottom>
+    </Layout>
   );
 };
 

@@ -33,7 +33,7 @@ export const SideNavigation: VFC = () => {
   const libraryIsActive = router.pathname === pagesPath.library.$url().pathname;
 
   return (
-    <Box bgColor={useColorModeValue(undefined, "gray.900")} p="5">
+    <Box h="full" bgColor={useColorModeValue(undefined, "gray.900")} p="5">
       <NextLink href={pagesPath.$url()} passHref>
         <Box as="a">
           <Image

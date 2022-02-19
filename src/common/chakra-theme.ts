@@ -19,6 +19,13 @@ const themeConfig = {
       "900": "#072C14",
     },
   },
+  styles: {
+    global: {
+      "html, body, #__next": {
+        height: "100%",
+      },
+    },
+  },
 };
 
 export const chakraTheme = extendTheme(themeConfig);
