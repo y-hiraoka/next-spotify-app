@@ -1,51 +1,109 @@
+import { Box, Heading, HStack, Stack, useColorModeValue } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useCallback, useRef, useState } from "react";
+import { useWindowSize } from "react-use";
 import { withAuth } from "../../lib/withAuth";
-import { useArtist, useArtistTopTracks } from "../../hooks/spotify-api";
+import {
+  useArtist,
+  useArtistTopTracks,
+  useMyCurrentPlaybackState,
+} from "../../hooks/spotify-api";
 import { Layout } from "../../components/Layout";
 import { SideNavigation } from "../../components/SideNavigation";
 import { ResponsiveBottom } from "../../components/ResponsiveBottom";
 import { Header } from "../../components/Header";
 import { WithHeader } from "../../components/WithHeader";
-import {
-  Box,
-  Center,
-  Flex,
-  Heading,
-  Icon,
-  IconButton,
-  Image,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { MdPlayArrow } from "react-icons/md";
-import { useRef } from "react";
+import { SpotifyColorPlayButton } from "../../components/SpotifyColorPlayButton";
+import { Track } from "../../components/Track";
+import { useSpotifyClient } from "../../hooks/spotify-client";
 
 const ArtistPage: NextPage = () => {
   const router = useRouter();
+  const { height: windowHeight } = useWindowSize();
 
-  const artist = useArtist([router.query.artistId as string]);
-  const topTracksQuery = useArtistTopTracks([router.query.artistId as string, "jp"]);
+  const spotifyClient = useSpotifyClient();
+  const { data: playbackState, mutate } = useMyCurrentPlaybackState([]);
+  const { data: artist } = useArtist([router.query.artistId as string]);
+  const { data: topTracks } = useArtistTopTracks([router.query.artistId as string, "jp"]);
+
+  const isPlayingThisArtist =
+    !!playbackState?.is_playing && playbackState.context?.uri === artist?.uri;
 
   const ref = useRef<HTMLDivElement>(null);
+
+  const [headerBgOpacity, setHeaderBgOpacity] = useState(0);
+
+  const scrollHandler = useCallback(() => {
+    const transitionStart = 100;
+    const transitionEnd = windowHeight * 0.5;
+
+    const top = Math.abs(ref.current?.getBoundingClientRect().top ?? 0);
+    const calculatedOpacity = [
+      0,
+      (top - transitionStart) / (transitionEnd - transitionStart),
+      1,
+    ].sort()[1];
+    setHeaderBgOpacity(calculatedOpacity);
+  }, [windowHeight]);
+
+  const togglePlayThisArtist = useCallback(async () => {
+    if (isPlayingThisArtist) {
+      await spotifyClient.pause();
+    } else if (playbackState?.context?.uri !== artist?.uri) {
+      await spotifyClient.play({ context_uri: artist?.uri });
+    } else {
+      await spotifyClient.play();
+    }
+    mutate();
+  }, [
+    artist?.uri,
+    isPlayingThisArtist,
+    mutate,
+    playbackState?.context?.uri,
+    spotifyClient,
+  ]);
 
   return (
     <Layout side={<SideNavigation />} bottom={<ResponsiveBottom />}>
       <WithHeader
+        onScroll={scrollHandler}
         header={
-          <Header>
-            <Text as="span" fontSize="sm" fontWeight="bold">
-              {artist.data?.name}
-            </Text>
+          <Header position="relative">
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              w="full"
+              h="full"
+              bgColor={useColorModeValue("white", "gray.800")}
+              zIndex={-1}
+              style={{ opacity: headerBgOpacity }}
+            />
+            <HStack
+              transition="opacity 0.3s, visibility 0.3s ease"
+              visibility={headerBgOpacity < 0.8 ? "hidden" : undefined}
+              opacity={headerBgOpacity < 0.8 ? 0 : 1}
+            >
+              <SpotifyColorPlayButton
+                aria-label="play an artist context"
+                isPlaying={isPlayingThisArtist}
+                size="10"
+                fontSize="2xl"
+                onClick={togglePlayThisArtist}
+              />
+              <Heading as="h1" fontSize="md" flex={1} noOfLines={1}>
+                {artist?.name}
+              </Heading>
+            </HStack>
           </Header>
         }
-        onScroll={(event) => console.log(ref.current?.getBoundingClientRect())}
       >
-        <Box position="relative" height="45%">
+        <Box ref={ref} position="relative" height="60%">
           <Box
             w="full"
             h="full"
-            bgImage={`url(${artist.data?.images[0].url})`}
+            bgImage={`url(${artist?.images[0].url})`}
             bgColor="transparent"
             bgSize="cover"
             bgPosition="center"
@@ -68,24 +126,26 @@ const ArtistPage: NextPage = () => {
             color="white"
             noOfLines={3}
           >
-            {artist.data?.name}
+            {artist?.name}
           </Heading>
         </Box>
-        <IconButton
-          aria-label="play an artist context"
-          variant="solid"
-          icon={<Icon as={MdPlayArrow} fontSize="4xl" />}
-          height="14"
-          width="14"
-          position="sticky"
-          top="16"
-          left="4"
-          marginTop="4"
-          borderRadius="full"
-          bgColor="green.500"
-          color="black"
-        />
-        <pre>{JSON.stringify(topTracksQuery.data, null, 2)}</pre>
+        <Stack marginTop="8" px="4" spacing="8">
+          <HStack>
+            <SpotifyColorPlayButton
+              aria-label="play an artist context"
+              isPlaying={isPlayingThisArtist}
+              onClick={togglePlayThisArtist}
+            />
+          </HStack>
+          <Box>
+            <Heading marginBottom="2">Top Tracks</Heading>
+            <Stack spacing="1">
+              {topTracks?.tracks.map((track, index) => (
+                <Track key={track.id} index={index} track={track} />
+              ))}
+            </Stack>
+          </Box>
+        </Stack>
       </WithHeader>
     </Layout>
   );
