@@ -2,18 +2,21 @@ import SpotifyWebApi from "spotify-web-api-js";
 import useSWR from "swr";
 import { useSpotifyClient } from "./spotify-client";
 
-const useSpotifyData = <T>(
+const useSpotifyData = <T, Keys extends unknown[]>(
   name: string,
-  keys: unknown[],
-  fetcher: (client: SpotifyWebApi.SpotifyWebApiJs) => Promise<T>
+  keys: null | Keys,
+  fetcher: (client: SpotifyWebApi.SpotifyWebApiJs, ...keys: [...Keys]) => Promise<T>
 ) => {
   const client = useSpotifyClient();
 
-  return useSWR<T>([client.getAccessToken(), name, ...keys], () => fetcher(client));
+  return useSWR<T>(
+    keys !== null ? [client.getAccessToken(), name, keys] : null,
+    (_token, _name, keys) => fetcher(client, ...keys)
+  );
 };
 
-export const useArtist = (artistId: string) => {
-  return useSpotifyData("Artist", [artistId], (client) => client.getArtist(artistId));
+export const useArtist = (keys: [artistId: string] | null) => {
+  return useSpotifyData("Artist", keys, (client, artistId) => client.getArtist(artistId));
 };
 
 type FollowedArtistsQueries = {
@@ -21,14 +24,16 @@ type FollowedArtistsQueries = {
   after?: string;
   limit?: number;
 };
-export const useFollowedArtists = (queries: FollowedArtistsQueries = {}) => {
-  return useSpotifyData("FollowedArtists", [queries], (client) =>
+export const useFollowedArtists = (keys: [queries?: FollowedArtistsQueries] | null) => {
+  return useSpotifyData("FollowedArtists", keys, (client, queries) =>
     client.getFollowedArtists(queries)
   );
 };
 
-export const useArtistTopTracks = (artistId: string, countryId: string) => {
-  return useSpotifyData("ArtistTopTracks", [artistId, countryId], (client) =>
+export const useArtistTopTracks = (
+  keys: [artistId: string, countryId: string] | null
+) => {
+  return useSpotifyData("ArtistTopTracks", keys, (client, artistId, countryId) =>
     client.getArtistTopTracks(artistId, countryId)
   );
 };
@@ -38,14 +43,14 @@ type MyTopItemsQueries = {
   offset?: number;
   time_range?: string;
 };
-export const useMyTopArtists = (queries: MyTopItemsQueries = {}) => {
-  return useSpotifyData("MyTopArtists", [queries], (client) =>
+export const useMyTopArtists = (keys: [queries?: MyTopItemsQueries] | null) => {
+  return useSpotifyData("MyTopArtists", keys, (client, queries) =>
     client.getMyTopArtists(queries)
   );
 };
 
-export const useMyTopTracks = (queries: MyTopItemsQueries = {}) => {
-  return useSpotifyData("MyTopTracks", [queries], (client) =>
+export const useMyTopTracks = (keys: [queries?: MyTopItemsQueries] | null) => {
+  return useSpotifyData("MyTopTracks", keys, (client, queries) =>
     client.getMyTopTracks(queries)
   );
 };
@@ -57,8 +62,10 @@ type FeaturedPlaylistsQueries = {
   offset?: number;
   timestamp?: string;
 };
-export const useFeaturedPlaylists = (queries: FeaturedPlaylistsQueries = {}) => {
-  return useSpotifyData("FeaturedPlaylists", [queries], (client) =>
+export const useFeaturedPlaylists = (
+  keys: [queries?: FeaturedPlaylistsQueries] | null
+) => {
+  return useSpotifyData("FeaturedPlaylists", keys, (client, queries) =>
     client.getFeaturedPlaylists(queries)
   );
 };
@@ -67,8 +74,10 @@ type ShowEpisodesQueries = {
   limit?: number;
   offset?: number;
 };
-export const useShowEpisodes = (showId: string, queries: ShowEpisodesQueries = {}) => {
-  return useSpotifyData("ShowEpisodes", [showId, queries], (client) =>
+export const useShowEpisodes = (
+  keys: [showId: string, queries?: ShowEpisodesQueries] | null
+) => {
+  return useSpotifyData("ShowEpisodes", keys, (client, showId, queries) =>
     client.getShowEpisodes(showId, queries)
   );
 };
@@ -82,9 +91,9 @@ type MyCurrentPlaybackStateQueries = {
   market?: string;
 };
 export const useMyCurrentPlaybackState = (
-  queries: MyCurrentPlaybackStateQueries = {}
+  keys: [queries?: MyCurrentPlaybackStateQueries] | null
 ) => {
-  return useSpotifyData("MyCurrentPlaybackState", [queries], (client) =>
+  return useSpotifyData("MyCurrentPlaybackState", keys, (client, queries) =>
     client.getMyCurrentPlaybackState(queries)
   );
 };
@@ -94,14 +103,14 @@ type MySavedTracksQueries = {
   market?: string;
   offset?: number;
 };
-export const useMySavedTracks = (queries: MySavedTracksQueries = {}) => {
-  return useSpotifyData("MySavedTracks", [queries], (client) =>
+export const useMySavedTracks = (keys: [queries?: MySavedTracksQueries] | null) => {
+  return useSpotifyData("MySavedTracks", keys, (client, queries) =>
     client.getMySavedTracks(queries)
   );
 };
 
-export const useContainsMySavedTracks = (trackIds: string[]) => {
-  return useSpotifyData("ContainsMySavedTracks", [trackIds], (client) =>
+export const useContainsMySavedTracks = (keys: [trackIds: string[]] | null) => {
+  return useSpotifyData("ContainsMySavedTracks", keys, (client, trackIds) =>
     client.containsMySavedTracks(trackIds)
   );
 };
@@ -110,8 +119,10 @@ type UserPlaylistsQueries = {
   limit?: number;
   offset?: number;
 };
-export const useUserPlaylists = (userId?: string, queries: UserPlaylistsQueries = {}) => {
-  return useSpotifyData("UserPlaylists", [userId, queries], (client) =>
+export const useUserPlaylists = (
+  keys: [userId?: string, queries?: UserPlaylistsQueries] | null
+) => {
+  return useSpotifyData("UserPlaylists", keys, (client, userId, queries) =>
     client.getUserPlaylists(userId, queries)
   );
 };
@@ -119,14 +130,14 @@ export const useUserPlaylists = (userId?: string, queries: UserPlaylistsQueries 
 type TrackQueries = {
   market?: string;
 };
-export const useTrack = (trackId: string, queries: TrackQueries = {}) => {
-  return useSpotifyData("Track", [trackId, queries], (client) =>
+export const useTrack = (keys: [trackId: string, queries?: TrackQueries] | null) => {
+  return useSpotifyData("Track", keys, (client, trackId, queries) =>
     client.getTrack(trackId, queries)
   );
 };
 
-export const useArtistRelatedArtists = (artistId: string) => {
-  return useSpotifyData("ArtistRelatedArtists", [artistId], (client) =>
+export const useArtistRelatedArtists = (keys: [artistId: string] | null) => {
+  return useSpotifyData("ArtistRelatedArtists", keys, (client, artistId) =>
     client.getArtistRelatedArtists(artistId)
   );
 };

@@ -42,7 +42,7 @@ export const LargerController: VFC = () => {
   const spotifyPlayer = useSpotifyPlayer();
   const spotifyClient = useSpotifyClient();
   const playbackState = usePlaybackState();
-  const myCurrentPlaybackState = useMyCurrentPlaybackState();
+  const myCurrentPlaybackState = useMyCurrentPlaybackState([]);
   const currentTrack =
   playbackState?.track_window.current_track ?? myCurrentPlaybackState.data?.item;
 

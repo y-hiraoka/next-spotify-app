@@ -7,8 +7,8 @@ export const useIsSavedTrack = (trackId: string | undefined | null) => {
 
   const ids = useMemo(() => (trackId ? [trackId] : []), [trackId]);
 
-  const { data, mutate } = useContainsMySavedTracks(ids);
-  const {mutate:mutateMySavedTracks} = useMySavedTracks()
+  const { data, mutate } = useContainsMySavedTracks([ids]);
+  const {mutate:mutateMySavedTracks} = useMySavedTracks([])
 
   const isSavedTrack = !!data?.[0];
 

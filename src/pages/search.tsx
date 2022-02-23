@@ -6,7 +6,7 @@ import { Layout } from "../components/Layout";
 import { SideNavigation } from "../components/SideNavigation";
 
 const Search: NextPage = () => {
-  const query = useMySavedTracks();
+  const query = useMySavedTracks([]);
 
   return (
     <Layout bottom={<ResponsiveBottom />} side={<SideNavigation />}>

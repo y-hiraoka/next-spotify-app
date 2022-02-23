@@ -16,10 +16,10 @@ import { SideNavigation } from "../components/SideNavigation";
 import { Layout } from "../components/Layout";
 
 const Home: NextPage = () => {
-  const followedArtists = useFollowedArtists({ limit: 10 });
-  const featuredPlaylists = useFeaturedPlaylists();
-  const myTopArtists = useMyTopArtists();
-  const myTopTracks = useMyTopTracks();
+  const followedArtists = useFollowedArtists([{ limit: 10 }]);
+  const featuredPlaylists = useFeaturedPlaylists([]);
+  const myTopArtists = useMyTopArtists([]);
+  const myTopTracks = useMyTopTracks([]);
 
   return (
     <Layout side={<SideNavigation />} bottom={<ResponsiveBottom />}>

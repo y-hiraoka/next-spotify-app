@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Flex,
+  FlexProps,
   HStack,
   Icon,
   IconButton,
@@ -12,23 +13,24 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { VFC, ReactNode } from "react";
+import { VFC } from "react";
 import { MdLightMode, MdDarkMode, MdLogout, MdPerson } from "react-icons/md";
 import { useMe } from "../hooks/spotify-api";
 import { pagesPath } from "../lib/$path";
 
-export const Header: VFC<{ children?: ReactNode }> = ({ children }) => {
+export const Header: VFC<FlexProps> = ({ children, ...props }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
     <Flex
+      {...props}
       as="header"
-      height="20"
+      py="2"
       px="4"
       alignItems="center"
       justifyContent="space-between"
     >
-      <Box>{children}</Box>
+      <Box flex={1}>{children}</Box>
       <HStack>
         <IconButton
           aria-label="toggle theme color"
@@ -50,7 +52,7 @@ const AccountMenu: VFC = () => {
   return (
     <Menu>
       <MenuButton>
-        <Avatar size="sm" name={data?.display_name} src={data?.images?.at(0)?.url} />
+        <Avatar size="sm" name={data?.display_name} src={data?.images?.[0]?.url} />
       </MenuButton>
       <MenuList>
         <NextLink passHref href={pagesPath.me.$url()}>
