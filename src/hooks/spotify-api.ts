@@ -141,3 +141,23 @@ export const useArtistRelatedArtists = (keys: [artistId: string] | null) => {
     client.getArtistRelatedArtists(artistId)
   );
 };
+
+type ArtistAlbumsQueries = {
+  include_groups?: ("album" | "single" | "appears_on" | "compilation")[];
+  limit?: number;
+  market?: string;
+  offset?: number;
+};
+export const useArtistAlbums = (
+  keys: [artistId: string, queries?: ArtistAlbumsQueries] | null
+) => {
+  return useSpotifyData("ArtistAlbums", keys, (client, artistId, queries) =>
+    client.getArtistAlbums(artistId, queries)
+  );
+};
+
+export const useIsFollowingArtists = (keys: [artistIds: string[]] | null) => {
+  return useSpotifyData("IsFollowingArtists", keys, (client, artistIds) =>
+    client.isFollowingArtists(artistIds)
+  );
+};

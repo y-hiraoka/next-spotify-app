@@ -1,12 +1,24 @@
-import { Box, Heading, HStack, Stack, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Stack,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import { useWindowSize } from "react-use";
+import { usePlayerDevice } from "react-spotify-web-playback-sdk";
 import { withAuth } from "../../lib/withAuth";
 import {
   useArtist,
+  useArtistAlbums,
+  useArtistRelatedArtists,
   useArtistTopTracks,
+  useIsFollowingArtists,
   useMyCurrentPlaybackState,
 } from "../../hooks/spotify-api";
 import { Layout } from "../../components/Layout";
@@ -15,17 +27,26 @@ import { ResponsiveBottom } from "../../components/ResponsiveBottom";
 import { Header } from "../../components/Header";
 import { WithHeader } from "../../components/WithHeader";
 import { SpotifyColorPlayButton } from "../../components/SpotifyColorPlayButton";
-import { Track } from "../../components/Track";
+import { Track, TrackSkeleton } from "../../components/Track";
 import { useSpotifyClient } from "../../hooks/spotify-client";
+import { ArtistCard, ArtistCardSkeleton } from "../../components/ArtistCard";
+import { AlbumCard, AlbumCardSkeleton } from "../../components/AlbumCard";
 
 const ArtistPage: NextPage = () => {
   const router = useRouter();
   const { height: windowHeight } = useWindowSize();
 
+  const device = usePlayerDevice();
+
+  const artistId = router.query.artistId as string;
   const spotifyClient = useSpotifyClient();
-  const { data: playbackState, mutate } = useMyCurrentPlaybackState([]);
-  const { data: artist } = useArtist([router.query.artistId as string]);
-  const { data: topTracks } = useArtistTopTracks([router.query.artistId as string, "jp"]);
+  const { data: playbackState, mutate: mutatePlayback } = useMyCurrentPlaybackState([]);
+  const { data: artist } = useArtist([artistId]);
+  const { data: topTracks } = useArtistTopTracks([artistId, "jp"]);
+  const { data: artistRelatedArtists } = useArtistRelatedArtists([artistId]);
+  const { data: artistAlbums } = useArtistAlbums([artistId, { limit: 10 }]);
+  const { data: [isFollowing] = [false], mutate: mutateIsFollowing } =
+    useIsFollowingArtists([[artistId]]);
 
   const isPlayingThisArtist =
     !!playbackState?.is_playing && playbackState.context?.uri === artist?.uri;
@@ -47,6 +68,15 @@ const ArtistPage: NextPage = () => {
     setHeaderBgOpacity(calculatedOpacity);
   }, [windowHeight]);
 
+  const followOfUnFollow = useCallback(async () => {
+    if (isFollowing) {
+      await spotifyClient.unfollowArtists([artistId]);
+    } else {
+      await spotifyClient.followArtists([artistId]);
+    }
+    mutateIsFollowing((prev) => [!prev?.[0]]);
+  }, [artistId, isFollowing, mutateIsFollowing, spotifyClient]);
+
   const togglePlayThisArtist = useCallback(async () => {
     if (isPlayingThisArtist) {
       await spotifyClient.pause();
@@ -55,11 +85,11 @@ const ArtistPage: NextPage = () => {
     } else {
       await spotifyClient.play();
     }
-    mutate();
+    mutatePlayback();
   }, [
     artist?.uri,
     isPlayingThisArtist,
-    mutate,
+    mutatePlayback,
     playbackState?.context?.uri,
     spotifyClient,
   ]);
@@ -119,6 +149,7 @@ const ArtistPage: NextPage = () => {
           />
           <Heading
             as="h1"
+            fontSize="6xl"
             position="absolute"
             bottom={0}
             left={0}
@@ -130,20 +161,53 @@ const ArtistPage: NextPage = () => {
           </Heading>
         </Box>
         <Stack marginTop="8" px="4" spacing="8">
-          <HStack>
+          <HStack spacing="4">
             <SpotifyColorPlayButton
               aria-label="play an artist context"
               isPlaying={isPlayingThisArtist}
               onClick={togglePlayThisArtist}
             />
+            <Button variant="outline" colorScheme="gray" onClick={followOfUnFollow}>
+              {isFollowing ? "Following" : "Follow"}
+            </Button>
           </HStack>
           <Box>
-            <Heading marginBottom="2">Top Tracks</Heading>
+            <Heading fontSize="3xl" marginBottom="2">
+              Top Tracks
+            </Heading>
             <Stack spacing="1">
-              {topTracks?.tracks.map((track, index) => (
-                <Track key={track.id} index={index} track={track} />
-              ))}
+              {topTracks === undefined
+                ? [...new Array(10).keys()].map((i) => (
+                    <TrackSkeleton key={i} hasThumbnail />
+                  ))
+                : topTracks.tracks.map((track, index) => (
+                    <Track key={track.id} index={index} track={track} />
+                  ))}
             </Stack>
+          </Box>
+          <Box>
+            <Heading fontSize="3xl" marginBottom="2">
+              Albums
+            </Heading>
+            <Flex w="full" overflowX="auto" gap="4">
+              {artistAlbums === undefined
+                ? [...new Array(10).keys()].map((i) => <AlbumCardSkeleton key={i} />)
+                : artistAlbums.items.map((album) => (
+                    <AlbumCard key={album.id} album={album} />
+                  ))}
+            </Flex>
+          </Box>
+          <Box>
+            <Heading fontSize="3xl" marginBottom="2">
+              Related Artists
+            </Heading>
+            <Flex w="full" overflowX="auto" gap="4">
+              {artistRelatedArtists === undefined
+                ? [...new Array(10).keys()].map((i) => <ArtistCardSkeleton key={i} />)
+                : artistRelatedArtists.artists.map((artist) => (
+                    <ArtistCard key={artist.id} artist={artist} />
+                  ))}
+            </Flex>
           </Box>
         </Stack>
       </WithHeader>
