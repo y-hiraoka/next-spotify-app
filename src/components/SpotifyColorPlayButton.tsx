@@ -27,7 +27,8 @@ export const SpotifyColorPlayButton: VFC<Props> = (props) => {
       borderRadius="full"
       bgColor="green.500"
       color="black"
-      _hover={{ bgColor: "green.600", transform:"scale(1.05)" }}
+      boxShadow="sm"
+      _hover={{ bgColor: "green.600", transform: "scale(1.05)", boxShadow: "md" }}
       _active={{ bgColor: "green.600" }}
     />
   );
