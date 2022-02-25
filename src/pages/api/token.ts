@@ -4,27 +4,25 @@ import {
   SPOTIFY_API_TOKEN_URL,
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
+  TOKEN_COOKIE_NAME,
 } from "../../common/constant";
-import { AccessToken } from "../../models/token";
 
-const handler: NextApiHandler<AccessToken | void> = async (req, res) => {
+const handler: NextApiHandler<string | void> = async (req, res) => {
   if (req.method !== "GET") {
     res.status(405).send();
     return;
   }
 
-  const tokenString = nookies.get({ req })["next-spotify-app-token"];
+  const refreshToken = nookies.get({ req })[TOKEN_COOKIE_NAME];
 
-  if (tokenString === undefined) {
+  if (refreshToken === undefined) {
     res.status(401).send();
     return;
   }
 
-  const token:AccessToken = JSON.parse(tokenString);
-
   const params = new URLSearchParams({
     grant_type: "refresh_token",
-    refresh_token: token.refresh_token,
+    refresh_token: refreshToken,
     client_id: SPOTIFY_CLIENT_ID,
     client_secret: SPOTIFY_CLIENT_SECRET,
   });
@@ -35,22 +33,19 @@ const handler: NextApiHandler<AccessToken | void> = async (req, res) => {
   });
 
   if (headers.ok) {
-    const response: AccessToken = await headers.json();
+    const response = await headers.json();
 
-    const newToken: AccessToken = {
-      ...response,
-      refresh_token: response.refresh_token || token.refresh_token,
-    };
+    const newRefreshToken = response.refresh_token || refreshToken;
 
-    nookies.set({res}, "next-spotify-app-token", JSON.stringify(newToken),{
+    nookies.set({ res }, TOKEN_COOKIE_NAME, newRefreshToken, {
       httpOnly: true,
-      path:"/"
-    })
+      path: "/",
+    });
 
-    res.send(newToken);
+    res.send(response.access_token);
     return;
   } else {
-    nookies.destroy({ res }, "next-spotify-app-token");
+    nookies.destroy({ res }, TOKEN_COOKIE_NAME);
     res.status(403).send();
   }
 };

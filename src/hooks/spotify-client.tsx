@@ -3,16 +3,15 @@ import { createContext, ReactNode, useCallback, useContext, useMemo, VFC } from 
 import { WebPlaybackSDK, WebPlaybackSDKProps } from "react-spotify-web-playback-sdk";
 import SpotifyWebApi from "spotify-web-api-js";
 import useSWR from "swr";
-import { AccessToken } from "../models/token";
 
-const fetchAccessToken = async (): Promise<AccessToken> => {
+const fetchAccessToken = async (): Promise<string> => {
   const headers = await fetch("/api/token");
 
-  if (headers.ok) return await headers.json();
+  if (headers.ok) return await headers.text();
   else throw new Error("failed.");
 };
 
-const AccessTokenContext = createContext<AccessToken | undefined>(undefined);
+const AccessTokenContext = createContext<string | undefined>(undefined);
 const SpotifyClientContext = createContext<SpotifyWebApi.SpotifyWebApiJs | undefined>(
   undefined
 );
@@ -27,12 +26,12 @@ export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }
 
   const client = useMemo(() => {
     const _client = new SpotifyWebApi();
-    _client.setAccessToken(token?.access_token ?? null);
+    _client.setAccessToken(token ?? null);
     return _client;
-  }, [token?.access_token]);
+  }, [token]);
 
   const getOAuthToken: WebPlaybackSDKProps["getOAuthToken"] = useCallback(
-    (callback) => token && callback(token.access_token),
+    (callback) => token && callback(token),
     [token]
   );
 

@@ -5,8 +5,8 @@ import {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
   SPOTIFY_REDIRECT_URI,
+  TOKEN_COOKIE_NAME,
 } from "../../common/constant";
-import { AccessToken } from "../../models/token";
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === "GET") {
@@ -33,9 +33,9 @@ const handler: NextApiHandler = async (req, res) => {
       });
 
       if (headers.ok) {
-        const response: AccessToken = await headers.json();
+        const response = await headers.json();
 
-        nookies.set({ res }, "next-spotify-app-token", JSON.stringify(response), {
+        nookies.set({ res }, TOKEN_COOKIE_NAME, response.refresh_token, {
           httpOnly: true,
           path: "/",
         });

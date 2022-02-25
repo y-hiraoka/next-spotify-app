@@ -38,3 +38,5 @@ export const SPOTIFY_REDIRECT_URI =
 export const SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize";
 
 export const SPOTIFY_API_TOKEN_URL = "https://accounts.spotify.com/api/token";
+
+export const TOKEN_COOKIE_NAME = "next-spotify-app-refresh-token";
