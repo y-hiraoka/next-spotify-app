@@ -1,5 +1,6 @@
 import { Progress } from "@chakra-ui/react";
-import { createContext, ReactNode, useContext, useMemo, VFC } from "react";
+import { createContext, ReactNode, useCallback, useContext, useMemo, VFC } from "react";
+import { WebPlaybackSDK, WebPlaybackSDKProps } from "react-spotify-web-playback-sdk";
 import SpotifyWebApi from "spotify-web-api-js";
 import useSWR from "swr";
 import { AccessToken } from "../models/token";
@@ -30,13 +31,23 @@ export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }
     return _client;
   }, [token?.access_token]);
 
+  const getOAuthToken: WebPlaybackSDKProps["getOAuthToken"] = useCallback(
+    (callback) => token && callback(token.access_token),
+    [token]
+  );
+
   return (
     <AccessTokenContext.Provider value={token}>
       <SpotifyClientContext.Provider value={client}>
         {token === undefined && error === undefined ? (
           <Progress size="xs" isIndeterminate />
         ) : (
-          children
+          <WebPlaybackSDK
+            getOAuthToken={getOAuthToken}
+            initialDeviceName="Yosuke Spotify App"
+          >
+            {children}
+          </WebPlaybackSDK>
         )}
       </SpotifyClientContext.Provider>
     </AccessTokenContext.Provider>
