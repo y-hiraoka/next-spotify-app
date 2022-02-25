@@ -1,27 +1,27 @@
-import { useCallback, useMemo } from "react";
-import { useContainsMySavedTracks,useMySavedTracks } from "./spotify-api";
+import { useCallback } from "react";
+import { useContainsMySavedTracks, useMySavedTracks } from "./spotify-api";
 import { useSpotifyClient } from "./spotify-client";
 
 export const useIsSavedTrack = (trackId: string | undefined | null) => {
   const spotifyClient = useSpotifyClient();
 
-  const ids = useMemo(() => (trackId ? [trackId] : []), [trackId]);
-
-  const { data, mutate } = useContainsMySavedTracks([ids]);
-  const {mutate:mutateMySavedTracks} = useMySavedTracks([])
+  const { data, mutate } = useContainsMySavedTracks(trackId ? [[trackId]] : null);
+  const { mutate: mutateMySavedTracks } = useMySavedTracks([]);
 
   const isSavedTrack = !!data?.[0];
 
   const toggleSavedTrack = useCallback(async () => {
+    if (!trackId) return;
+
     if (isSavedTrack) {
-      await spotifyClient.removeFromMySavedTracks(ids);
+      await spotifyClient.removeFromMySavedTracks([trackId]);
     } else {
-      await spotifyClient.addToMySavedTracks(ids);
+      await spotifyClient.addToMySavedTracks([trackId]);
     }
 
     mutate((prev) => [!prev?.[0]]);
-    mutateMySavedTracks()
-  }, [isSavedTrack, mutate, mutateMySavedTracks, spotifyClient, ids]);
+    mutateMySavedTracks();
+  }, [trackId, isSavedTrack, mutate, mutateMySavedTracks, spotifyClient]);
 
   return { isSavedTrack, toggleSavedTrack };
 };

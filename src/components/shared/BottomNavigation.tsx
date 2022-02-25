@@ -10,7 +10,7 @@ import {
   MdOutlineLibraryMusic,
   MdSearch,
 } from "react-icons/md";
-import { pagesPath } from "../lib/$path";
+import { pagesPath } from "../../lib/$path";
 
 const useLinkColor = (isActive: boolean) =>
   useColorModeValue(

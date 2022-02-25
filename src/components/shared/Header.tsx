@@ -15,8 +15,8 @@ import {
 import NextLink from "next/link";
 import { VFC } from "react";
 import { MdLightMode, MdDarkMode, MdLogout, MdPerson } from "react-icons/md";
-import { useMe } from "../hooks/spotify-api";
-import { pagesPath } from "../lib/$path";
+import { useMe } from "../../hooks/spotify-api";
+import { pagesPath } from "../../lib/$path";
 
 export const Header: VFC<FlexProps> = ({ children, ...props }) => {
   const { colorMode, toggleColorMode } = useColorMode();

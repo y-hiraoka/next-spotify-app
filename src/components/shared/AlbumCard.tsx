@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
-import { pagesPath } from "../lib/$path";
+import { pagesPath } from "../../lib/$path";
 
 export const AlbumCard: VFC<{ album: SpotifyApi.AlbumObjectSimplified }> = ({
   album,

@@ -31,7 +31,8 @@ export const PlaybackSeekBar: VFC<{ playbackState: Spotify.PlaybackState | null 
       aria-label="seek playback"
       size="sm"
       colorScheme="green"
-      value={isSeeking ? seekingPosition : playbackState?.position}
+      isDisabled={playbackState === null}
+      value={isSeeking ? seekingPosition : playbackState?.position ?? 0}
       max={playbackState?.duration}
       focusThumbOnChange={false}
       onChangeStart={handleChangeStart}

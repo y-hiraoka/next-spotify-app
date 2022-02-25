@@ -12,6 +12,8 @@ import {
   SliderFilledTrack,
   SliderThumb,
   VStack,
+  Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { useCallback, useRef, VFC } from "react";
 import {
@@ -31,10 +33,10 @@ import {
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import useSWR from "swr";
-import { useMyCurrentPlaybackState } from "../hooks/spotify-api";
-import { useSpotifyClient } from "../hooks/spotify-client";
-import { useIsSavedTrack } from "../hooks/useSavedTrack";
-import { formatDurationMS } from "../lib/formatDurationMS";
+import { useMyCurrentPlaybackState } from "../../hooks/spotify-api";
+import { useSpotifyClient } from "../../hooks/spotify-client";
+import { useIsSavedTrack } from "../../hooks/useSavedTrack";
+import { formatDurationMS } from "../../lib/formatDurationMS";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
 
@@ -44,7 +46,7 @@ export const LargerController: VFC = () => {
   const playbackState = usePlaybackState();
   const myCurrentPlaybackState = useMyCurrentPlaybackState([]);
   const currentTrack =
-  playbackState?.track_window.current_track ?? myCurrentPlaybackState.data?.item;
+    playbackState?.track_window.current_track ?? myCurrentPlaybackState.data?.item;
 
   const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
@@ -261,6 +263,48 @@ const VolumeSeekBar: VFC = () => {
         </SliderTrack>
         <SliderThumb w="2" h="2" />
       </Slider>
+    </HStack>
+  );
+};
+
+export const LargerControllerSkeleton: VFC = () => {
+  return (
+    <HStack
+      bgColor={useColorModeValue("gray.50", "gray.900")}
+      px="4"
+      py="2"
+      boxShadow="lg"
+    >
+      <HStack width="30%" spacing="3">
+        <Skeleton width="12" height="12" />
+        <Stack flex="0.6">
+          <SkeletonText noOfLines={1} />
+          <SkeletonText noOfLines={1} />
+        </Stack>
+      </HStack>
+      <Box width="40%">
+        <VStack>
+          <HStack>
+            <Skeleton w="10" h="10" />
+            <Skeleton w="10" h="10" />
+            <Skeleton w="10" h="10" />
+            <Skeleton w="10" h="10" />
+            <Skeleton w="10" h="10" />
+          </HStack>
+          <HStack w="full">
+            <SkeletonText fontSize="xs" noOfLines={1} h="4">
+              00:00
+            </SkeletonText>
+            <Skeleton flex={1} h="1" />
+            <SkeletonText fontSize="xs" noOfLines={1} h="4">
+              00:00
+            </SkeletonText>
+          </HStack>
+        </VStack>
+      </Box>
+      <HStack width="30%" justifyContent="flex-end">
+        <Skeleton w="40" h="2" />
+      </HStack>
     </HStack>
   );
 };

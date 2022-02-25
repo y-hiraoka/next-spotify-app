@@ -30,9 +30,9 @@ import {
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import { useWindowSize } from "react-use";
-import { useSpotifyClient } from "../hooks/spotify-client";
-import { useIsSavedTrack } from "../hooks/useSavedTrack";
-import { formatDurationMS } from "../lib/formatDurationMS";
+import { useSpotifyClient } from "../../hooks/spotify-client";
+import { useIsSavedTrack } from "../../hooks/useSavedTrack";
+import { formatDurationMS } from "../../lib/formatDurationMS";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
 

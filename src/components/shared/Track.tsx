@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
-import { formatDurationMS } from "../lib/formatDurationMS";
+import { formatDurationMS } from "../../lib/formatDurationMS";
 
 export const Track: VFC<{
   index: number;

@@ -11,7 +11,8 @@ const useSpotifyData = <T, Keys extends unknown[]>(
 
   return useSWR<T>(
     keys !== null ? [client.getAccessToken(), name, keys] : null,
-    (_token, _name, keys) => fetcher(client, ...keys)
+    (_token, _name, keys) => fetcher(client, ...keys),
+    { suspense: true }
   );
 };
 
