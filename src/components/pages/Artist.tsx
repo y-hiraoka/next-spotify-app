@@ -18,6 +18,7 @@ import {
   useIsFollowingArtists,
 } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
+import { range } from "../../lib/range";
 import { AlbumCardSkeleton, AlbumCard } from "../shared/AlbumCard";
 import { ArtistCardSkeleton, ArtistCard } from "../shared/ArtistCard";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
@@ -29,7 +30,6 @@ import { SideNavigation } from "../shared/SideNavigation";
 import { SpotifyColorPlayButton } from "../shared/SpotifyColorPlayButton";
 import { TrackSkeleton, Track } from "../shared/Track";
 import { WithHeader } from "../shared/WithHeader";
-
 
 export const ArtistPage: VFC<{ artistId: string }> = ({ artistId }) => {
   return (
@@ -49,9 +49,6 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
   const spotifyClient = useSpotifyClient();
   const { data: playbackState, mutate: mutatePlayback } = useMyCurrentPlaybackState([]);
   const { data: artist } = useArtist([artistId]);
-  const { data: topTracks } = useArtistTopTracks([artistId, "jp"]);
-  const { data: artistRelatedArtists } = useArtistRelatedArtists([artistId]);
-  const { data: artistAlbums } = useArtistAlbums([artistId, { limit: 10 }]);
   const { data: [isFollowing] = [false], mutate: mutateIsFollowing } =
     useIsFollowingArtists([[artistId]]);
 
@@ -181,13 +178,9 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
             Top Tracks
           </Heading>
           <Stack spacing="1">
-            {topTracks === undefined
-              ? [...new Array(10).keys()].map((i) => (
-                  <TrackSkeleton key={i} hasThumbnail />
-                ))
-              : topTracks.tracks.map((track, index) => (
-                  <Track key={track.id} index={index} track={track} />
-                ))}
+            <Suspense fallback={<TopTracksFallback />}>
+              <TopTracks artistId={artistId} />
+            </Suspense>
           </Stack>
         </Box>
         <Box>
@@ -195,11 +188,9 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
             Albums
           </Heading>
           <Flex w="full" overflowX="auto" gap="4">
-            {artistAlbums === undefined
-              ? [...new Array(10).keys()].map((i) => <AlbumCardSkeleton key={i} />)
-              : artistAlbums.items.map((album) => (
-                  <AlbumCard key={album.id} album={album} />
-                ))}
+            <Suspense fallback={<AlbumsFallback />}>
+              <Albums artistId={artistId} />
+            </Suspense>
           </Flex>
         </Box>
         <Box>
@@ -207,14 +198,78 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
             Related Artists
           </Heading>
           <Flex w="full" overflowX="auto" gap="4">
-            {artistRelatedArtists === undefined
-              ? [...new Array(10).keys()].map((i) => <ArtistCardSkeleton key={i} />)
-              : artistRelatedArtists.artists.map((artist) => (
-                  <ArtistCard key={artist.id} artist={artist} />
-                ))}
+            <Suspense fallback={<RelatedArtistsFallback />}>
+              <RelatedArtists artistId={artistId} />
+            </Suspense>
           </Flex>
         </Box>
       </Stack>
     </WithHeader>
+  );
+};
+
+const TopTracks: VFC<{ artistId: string }> = ({ artistId }) => {
+  const { data: topTracks } = useArtistTopTracks([artistId, "jp"]);
+
+  return (
+    <>
+      {topTracks?.tracks.map((track, index) => (
+        <Track key={track.id} index={index} track={track} />
+      ))}
+    </>
+  );
+};
+
+const TopTracksFallback: VFC = () => {
+  return (
+    <>
+      {[...range(0, 10)].map((i) => (
+        <TrackSkeleton hasThumbnail key={i} />
+      ))}
+    </>
+  );
+};
+
+const Albums: VFC<{ artistId: string }> = ({ artistId }) => {
+  const { data: artistAlbums } = useArtistAlbums([artistId, { limit: 10 }]);
+
+  return (
+    <>
+      {artistAlbums?.items.map((album) => (
+        <AlbumCard key={album.id} album={album} />
+      ))}
+    </>
+  );
+};
+
+const AlbumsFallback: VFC = () => {
+  return (
+    <>
+      {[...range(0, 5)].map((i) => (
+        <AlbumCardSkeleton key={i} />
+      ))}
+    </>
+  );
+};
+
+const RelatedArtists: VFC<{ artistId: string }> = ({ artistId }) => {
+  const { data: artistRelatedArtists } = useArtistRelatedArtists([artistId]);
+
+  return (
+    <>
+      {artistRelatedArtists?.artists.map((artist) => (
+        <ArtistCard key={artist.id} artist={artist} />
+      ))}
+    </>
+  );
+};
+
+const RelatedArtistsFallback: VFC = () => {
+  return (
+    <>
+      {[...range(0, 5)].map((i) => (
+        <ArtistCardSkeleton key={i} />
+      ))}
+    </>
   );
 };
