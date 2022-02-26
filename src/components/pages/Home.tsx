@@ -1,5 +1,5 @@
 import { Box, Heading, HStack, Stack } from "@chakra-ui/react";
-import { Suspense, VFC } from "react";
+import { memo, Suspense, VFC } from "react";
 import {
   useFollowedArtists,
   useFeaturedPlaylists,
@@ -77,7 +77,7 @@ const HomePageContent: VFC = () => {
   );
 };
 
-const FollowedArtists: VFC = () => {
+const FollowedArtists: VFC = memo(() => {
   const { data: followedArtists } = useFollowedArtists([{ limit: 10 }]);
 
   return (
@@ -87,9 +87,9 @@ const FollowedArtists: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const FollowedArtistsFallback: VFC = () => {
+const FollowedArtistsFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 10)].map((i) => (
@@ -97,9 +97,9 @@ const FollowedArtistsFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const FeaturedPlaylists: VFC = () => {
+const FeaturedPlaylists: VFC = memo(() => {
   const { data: featuredPlaylists } = useFeaturedPlaylists([]);
 
   return (
@@ -109,9 +109,9 @@ const FeaturedPlaylists: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const FeaturedPlaylistsFallback: VFC = () => {
+const FeaturedPlaylistsFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 5)].map((i) => (
@@ -119,9 +119,9 @@ const FeaturedPlaylistsFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const MyTopArtists: VFC = () => {
+const MyTopArtists: VFC = memo(() => {
   const { data: myTopArtists } = useMyTopArtists([]);
 
   return (
@@ -131,9 +131,9 @@ const MyTopArtists: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const MyTopArtistsFallback: VFC = () => {
+const MyTopArtistsFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 5)].map((i) => (
@@ -141,9 +141,9 @@ const MyTopArtistsFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const MyTopTracks: VFC = () => {
+const MyTopTracks: VFC = memo(() => {
   const { data: myTopTracks } = useMyTopTracks([]);
 
   return (
@@ -153,9 +153,9 @@ const MyTopTracks: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const MyTopTracksFallback: VFC = () => {
+const MyTopTracksFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 20)].map((i) => (
@@ -163,4 +163,15 @@ const MyTopTracksFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
+
+if (process.env.NODE_ENV === "development") {
+  FollowedArtists.displayName = "FollowedArtists";
+  FollowedArtistsFallback.displayName = "FollowedArtistsFallback";
+  FeaturedPlaylists.displayName = "FeaturedPlaylists";
+  FeaturedPlaylistsFallback.displayName = "FeaturedPlaylistsFallback";
+  MyTopArtists.displayName = "MyTopArtists";
+  MyTopArtistsFallback.displayName = "MyTopArtistsFallback";
+  MyTopTracks.displayName = "MyTopTracks";
+  MyTopTracksFallback.displayName = "MyTopTracksFallback";
+}

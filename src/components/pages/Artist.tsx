@@ -7,7 +7,7 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { Suspense, useCallback, useRef, useState, VFC } from "react";
+import { memo, Suspense, useCallback, useRef, useState, VFC } from "react";
 import { useWindowSize } from "react-use";
 import {
   useMyCurrentPlaybackState,
@@ -208,7 +208,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
   );
 };
 
-const TopTracks: VFC<{ artistId: string }> = ({ artistId }) => {
+const TopTracks: VFC<{ artistId: string }> = memo(({ artistId }) => {
   const { data: topTracks } = useArtistTopTracks([artistId, "jp"]);
 
   return (
@@ -218,9 +218,9 @@ const TopTracks: VFC<{ artistId: string }> = ({ artistId }) => {
       ))}
     </>
   );
-};
+});
 
-const TopTracksFallback: VFC = () => {
+const TopTracksFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 10)].map((i) => (
@@ -228,9 +228,9 @@ const TopTracksFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const Albums: VFC<{ artistId: string }> = ({ artistId }) => {
+const Albums: VFC<{ artistId: string }> = memo(({ artistId }) => {
   const { data: artistAlbums } = useArtistAlbums([artistId, { limit: 10 }]);
 
   return (
@@ -240,9 +240,9 @@ const Albums: VFC<{ artistId: string }> = ({ artistId }) => {
       ))}
     </>
   );
-};
+});
 
-const AlbumsFallback: VFC = () => {
+const AlbumsFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 5)].map((i) => (
@@ -250,9 +250,9 @@ const AlbumsFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
 
-const RelatedArtists: VFC<{ artistId: string }> = ({ artistId }) => {
+const RelatedArtists: VFC<{ artistId: string }> = memo(({ artistId }) => {
   const { data: artistRelatedArtists } = useArtistRelatedArtists([artistId]);
 
   return (
@@ -262,9 +262,9 @@ const RelatedArtists: VFC<{ artistId: string }> = ({ artistId }) => {
       ))}
     </>
   );
-};
+});
 
-const RelatedArtistsFallback: VFC = () => {
+const RelatedArtistsFallback: VFC = memo(() => {
   return (
     <>
       {[...range(0, 5)].map((i) => (
@@ -272,4 +272,13 @@ const RelatedArtistsFallback: VFC = () => {
       ))}
     </>
   );
-};
+});
+
+if (process.env.NODE_ENV === "development") {
+  TopTracks.displayName = "TopTracks";
+  TopTracksFallback.displayName = "TopTracksFallback";
+  Albums.displayName = "Albums";
+  AlbumsFallback.displayName = "AlbumsFallback";
+  RelatedArtists.displayName = "RelatedArtists";
+  RelatedArtistsFallback.displayName = "RelatedArtistsFallback";
+}
