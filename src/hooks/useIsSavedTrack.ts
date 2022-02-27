@@ -10,7 +10,7 @@ export const useIsSavedTrack = (trackId: string | undefined | null) => {
 
   const isSavedTrack = !!data?.[0];
 
-  const toggleSavedTrack = useCallback(async () => {
+  const toggleIsSavedTrack = useCallback(async () => {
     if (!trackId) return;
 
     if (isSavedTrack) {
@@ -23,5 +23,5 @@ export const useIsSavedTrack = (trackId: string | undefined | null) => {
     mutateMySavedTracks();
   }, [trackId, isSavedTrack, mutate, mutateMySavedTracks, spotifyClient]);
 
-  return { isSavedTrack, toggleSavedTrack };
+  return { isSavedTrack, toggleIsSavedTrack };
 };

@@ -7,10 +7,9 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { memo, Suspense, useCallback, useRef, useState, VFC } from "react";
+import { memo, Suspense, useCallback, useRef, VFC } from "react";
 import { useWindowSize } from "react-use";
 import {
-  useMyCurrentPlaybackState,
   useArtist,
   useArtistTopTracks,
   useArtistRelatedArtists,
@@ -18,6 +17,8 @@ import {
   useIsFollowingArtists,
 } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
+import { useHeaderTransitionWithScroll } from "../../hooks/useHeaderTransitionWithScroll";
+import { usePlayContextURI } from "../../hooks/usePlayContextURI";
 import { range } from "../../lib/range";
 import { AlbumCardSkeleton, AlbumCard } from "../shared/AlbumCard";
 import { ArtistCardSkeleton, ArtistCard } from "../shared/ArtistCard";
@@ -47,30 +48,20 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
   const { height: windowHeight } = useWindowSize();
 
   const spotifyClient = useSpotifyClient();
-  const { data: playbackState, mutate: mutatePlayback } = useMyCurrentPlaybackState([]);
   const { data: artist } = useArtist([artistId]);
   const { data: [isFollowing] = [false], mutate: mutateIsFollowing } =
     useIsFollowingArtists([[artistId]]);
 
-  const isPlayingThisArtist =
-    !!playbackState?.is_playing && playbackState.context?.uri === artist?.uri;
+  const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
+    artist?.uri ?? ""
+  );
 
   const ref = useRef<HTMLDivElement>(null);
-
-  const [headerBgOpacity, setHeaderBgOpacity] = useState(0);
-
-  const scrollHandler = useCallback(() => {
-    const transitionStart = 100;
-    const transitionEnd = windowHeight * 0.5;
-
-    const top = Math.abs(ref.current?.getBoundingClientRect().top ?? 0);
-    const calculatedOpacity = [
-      0,
-      (top - transitionStart) / (transitionEnd - transitionStart),
-      1,
-    ].sort()[1];
-    setHeaderBgOpacity(calculatedOpacity);
-  }, [windowHeight]);
+  const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
+    ref,
+    100,
+    windowHeight * 0.5
+  );
 
   const followOfUnFollow = useCallback(async () => {
     if (isFollowing) {
@@ -80,23 +71,6 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
     }
     mutateIsFollowing((prev) => [!prev?.[0]]);
   }, [artistId, isFollowing, mutateIsFollowing, spotifyClient]);
-
-  const togglePlayThisArtist = useCallback(async () => {
-    if (isPlayingThisArtist) {
-      await spotifyClient.pause();
-    } else if (playbackState?.context?.uri !== artist?.uri) {
-      await spotifyClient.play({ context_uri: artist?.uri });
-    } else {
-      await spotifyClient.play();
-    }
-    mutatePlayback();
-  }, [
-    artist?.uri,
-    isPlayingThisArtist,
-    mutatePlayback,
-    playbackState?.context?.uri,
-    spotifyClient,
-  ]);
 
   return (
     <WithHeader
@@ -111,19 +85,19 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
             h="full"
             bgColor={useColorModeValue("white", "gray.800")}
             zIndex={-1}
-            style={{ opacity: headerBgOpacity }}
+            style={{ opacity: headerOpacity }}
           />
           <HStack
             transition="opacity 0.3s, visibility 0.3s ease"
-            visibility={headerBgOpacity < 0.8 ? "hidden" : undefined}
-            opacity={headerBgOpacity < 0.8 ? 0 : 1}
+            visibility={headerOpacity < 0.8 ? "hidden" : undefined}
+            opacity={headerOpacity < 0.8 ? 0 : 1}
           >
             <SpotifyColorPlayButton
               aria-label="play an artist context"
-              isPlaying={isPlayingThisArtist}
+              isPlaying={isPlayingContextURI}
               size="10"
               fontSize="2xl"
-              onClick={togglePlayThisArtist}
+              onClick={togglePlayContextURI}
             />
             <Heading as="h1" fontSize="md" flex={1} noOfLines={1}>
               {artist?.name}
@@ -166,8 +140,8 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
         <HStack spacing="4">
           <SpotifyColorPlayButton
             aria-label="play an artist context"
-            isPlaying={isPlayingThisArtist}
-            onClick={togglePlayThisArtist}
+            isPlaying={isPlayingContextURI}
+            onClick={togglePlayContextURI}
           />
           <Button variant="outline" colorScheme="gray" onClick={followOfUnFollow}>
             {isFollowing ? "Following" : "Follow"}

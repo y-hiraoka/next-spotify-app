@@ -31,7 +31,7 @@ import {
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import { useWindowSize } from "react-use";
 import { useSpotifyClient } from "../../hooks/spotify-client";
-import { useIsSavedTrack } from "../../hooks/useSavedTrack";
+import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
@@ -71,7 +71,7 @@ const ControllerBar: VFC = () => {
 
   const spotifyPlayer = useSpotifyPlayer();
 
-  const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
+  const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
   return (
     <Box borderRadius="md" overflow="hidden">
@@ -116,7 +116,7 @@ const ControllerBar: VFC = () => {
             icon={
               <Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="3xl" />
             }
-            onClick={toggleSavedTrack}
+            onClick={toggleIsSavedTrack}
             variant="ghost"
             color={isSavedTrack ? "green.600" : undefined}
           />
@@ -153,7 +153,7 @@ const ControllerDrawer: VFC<{
   const currentTrack = playbackState.track_window.current_track;
   const spotifyPlayer = useSpotifyPlayer();
   const spotifyClient = useSpotifyClient();
-  const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
+  const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
   const { height } = useWindowSize();
 
   return (
@@ -219,7 +219,7 @@ const ControllerDrawer: VFC<{
                   />
                 }
                 color={isSavedTrack ? "green.600" : undefined}
-                onClick={toggleSavedTrack}
+                onClick={toggleIsSavedTrack}
                 variant="ghost"
               />
               <HStack>

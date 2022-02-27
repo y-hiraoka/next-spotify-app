@@ -35,7 +35,7 @@ import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-s
 import useSWR from "swr";
 import { useMyCurrentPlaybackState } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
-import { useIsSavedTrack } from "../../hooks/useSavedTrack";
+import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
@@ -48,7 +48,7 @@ export const LargerController: VFC = () => {
   const currentTrack =
     playbackState?.track_window.current_track ?? myCurrentPlaybackState.data?.item;
 
-  const { isSavedTrack, toggleSavedTrack } = useIsSavedTrack(currentTrack?.id);
+  const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
   const shuffleState =
     myCurrentPlaybackState.data?.shuffle_state ?? playbackState?.shuffle;
@@ -93,7 +93,7 @@ export const LargerController: VFC = () => {
           aria-checked={isSavedTrack}
           size="sm"
           icon={<Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="xl" />}
-          onClick={toggleSavedTrack}
+          onClick={toggleIsSavedTrack}
           variant="ghost"
           color={isSavedTrack ? "green.600" : undefined}
         />

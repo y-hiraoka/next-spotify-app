@@ -162,3 +162,30 @@ export const useIsFollowingArtists = (keys: [artistIds: string[]] | null) => {
     client.isFollowingArtists(artistIds)
   );
 };
+
+type AlbumQueries = {
+  market?: string;
+};
+
+export const useAlbum = (keys: [albumId: string, queries?: AlbumQueries]) => {
+  return useSpotifyData("Album", keys, (client, albumId, queries) =>
+    client.getAlbum(albumId, queries)
+  );
+};
+
+export const useContainsMySavedAlbums = (keys: [albumIds: string[]] | null) => {
+  return useSpotifyData("ContainsMySavedAlbums", keys, (client, albumIds) =>
+    client.containsMySavedAlbums(albumIds)
+  );
+};
+
+type MySavedAlbumsQueries = {
+  limit?: number;
+  market?: string;
+  offset?: number;
+};
+export const useMySavedAlbums = (keys: [queries?: MySavedAlbumsQueries] | null) => {
+  return useSpotifyData("MySavedAlbums", keys, (client, queries) =>
+    client.getMySavedAlbums(queries)
+  );
+};
