@@ -4,9 +4,11 @@ import {
   Flex,
   Heading,
   HStack,
+  Link,
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 import { memo, Suspense, useCallback, useRef, VFC } from "react";
 import { useWindowSize } from "react-use";
 import {
@@ -19,6 +21,7 @@ import {
 import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useHeaderTransitionWithScroll } from "../../hooks/useHeaderTransitionWithScroll";
 import { usePlayContextURI } from "../../hooks/usePlayContextURI";
+import { pagesPath } from "../../lib/$path";
 import { range } from "../../lib/range";
 import { AlbumCardSkeleton, AlbumCard } from "../shared/AlbumCard";
 import { ArtistCardSkeleton, ArtistCard } from "../shared/ArtistCard";
@@ -158,9 +161,14 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
           </Stack>
         </Box>
         <Box>
-          <Heading fontSize="3xl" marginBottom="2">
-            Albums
-          </Heading>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Heading fontSize="3xl" marginBottom="2">
+              Albums
+            </Heading>
+            <NextLink href={pagesPath.artists._artistId(artistId).albums.$url()} passHref>
+              <Link>Show more</Link>
+            </NextLink>
+          </Flex>
           <Flex w="full" overflowX="auto" gap="4">
             <Suspense fallback={<AlbumsFallback />}>
               <Albums artistId={artistId} />
