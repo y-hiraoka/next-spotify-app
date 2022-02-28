@@ -33,7 +33,7 @@ export const HomePage: VFC = () => {
 const HomePageContent: VFC = () => {
   return (
     <WithHeader header={<Header position="relative" />}>
-      <Stack px="4" spacing="8" marginTop="16">
+      <Stack px="4" spacing="8" marginTop="16" paddingBottom="24">
         <Stack>
           <Heading fontSize="xl">Following</Heading>
           <Box overflowX="auto" w="full">

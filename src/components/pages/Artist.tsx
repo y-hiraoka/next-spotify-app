@@ -106,7 +106,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
         </Header>
       }
     >
-      <Box ref={ref} position="relative" height="60%">
+      <Box ref={ref} position="relative" height="50%">
         <Box
           w="full"
           h="full"
@@ -136,7 +136,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
           {artist?.name}
         </Heading>
       </Box>
-      <Stack marginTop="8" px="4" spacing="8">
+      <Stack marginTop="8" px="4" spacing="8" paddingBottom="24">
         <HStack spacing="4">
           <SpotifyColorPlayButton
             aria-label="play an artist context"

@@ -10,8 +10,10 @@ export const ResponsiveBottom: VFC = () => {
 
   if (isMobile) {
     return (
-      <Box>
-        <MobileController />
+      <Box position="relative">
+        <Box position="absolute" bottom="100%" w="full">
+          <MobileController />
+        </Box>
         <BottomNavigation />
       </Box>
     );

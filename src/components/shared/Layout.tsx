@@ -1,18 +1,21 @@
 import { Box, Grid } from "@chakra-ui/react";
 import { ReactNode, VFC } from "react";
+import { useIsMobileSize } from "../../hooks/useIsMobileSize";
 
 export const Layout: VFC<{
   children: ReactNode;
   side: ReactNode;
   bottom: ReactNode;
 }> = ({ bottom, children, side }) => {
+  const isMobile = useIsMobileSize();
+
   return (
     <Grid
       h="full"
-      templateColumns={{ base: "1fr", md: "auto 1fr" }}
+      templateColumns={isMobile ? "1fr" : "auto 1fr"}
       templateRows="1fr auto"
     >
-      <Box display={{ base: "none", md: "block" }}>{side}</Box>
+      {!isMobile && <Box>{side}</Box>}
       <Box overflow="auto">{children}</Box>
       <Box gridColumn="1 / -1">{bottom}</Box>
     </Grid>

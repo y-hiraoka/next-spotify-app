@@ -17,8 +17,10 @@ import {
   Progress,
   Center,
   Heading,
+  Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
-import { VFC } from "react";
+import { Suspense, VFC } from "react";
 import {
   MdFavorite,
   MdFavoriteBorder,
@@ -42,8 +44,8 @@ export const MobileController: VFC = () => {
 
   return (
     playbackState && (
-      <>
-        <Box p="2" width="full" position="relative">
+      <Box p="2" width="full" position="relative">
+        <Suspense fallback={<ControllerBarFallback />}>
           <Box
             as="button"
             position="absolute"
@@ -54,13 +56,13 @@ export const MobileController: VFC = () => {
             onClick={onOpen}
           />
           <ControllerBar />
-        </Box>
-        <ControllerDrawer
-          isOpen={isOpen}
-          onClose={onClose}
-          playbackState={playbackState}
-        />
-      </>
+          <ControllerDrawer
+            isOpen={isOpen}
+            onClose={onClose}
+            playbackState={playbackState}
+          />
+        </Suspense>
+      </Box>
     )
   );
 };
@@ -145,6 +147,29 @@ const ControllerBar: VFC = () => {
   );
 };
 
+const ControllerBarFallback: VFC = () => {
+  return (
+    <Box borderRadius="md" overflow="hidden">
+      <HStack
+        bgColor={useColorModeValue("gray.50", "gray.900")}
+        p="2"
+        boxShadow="lg"
+        spacing="3"
+      >
+        <Skeleton width="10" height="10" borderRadius="md" />
+        <Stack flex={1}>
+          <SkeletonText noOfLines={1} />
+          <SkeletonText noOfLines={1} />
+        </Stack>
+        <HStack>
+          <Skeleton width="10" height="10" borderRadius="md" />
+          <Skeleton width="10" height="10" borderRadius="md" />
+        </HStack>
+      </HStack>
+    </Box>
+  );
+};
+
 const ControllerDrawer: VFC<{
   isOpen: boolean;
   onClose: () => void;
@@ -157,7 +182,13 @@ const ControllerDrawer: VFC<{
   const { height } = useWindowSize();
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} placement="bottom" size="full">
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      placement="bottom"
+      size="full"
+      returnFocusOnClose={false}
+    >
       <DrawerContent maxH={height}>
         <DrawerCloseButton />
         <DrawerHeader>
@@ -168,7 +199,7 @@ const ControllerDrawer: VFC<{
             wordBreak="break-all"
             paddingRight="6"
           >
-            {currentTrack.artists[0].name}
+            {playbackState.context.metadata.context_description}
           </Text>
         </DrawerHeader>
         <DrawerBody>

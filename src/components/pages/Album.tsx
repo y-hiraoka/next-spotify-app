@@ -17,7 +17,6 @@ import { memo, Suspense, useRef, VFC } from "react";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useWindowSize } from "react-use";
 import { useArtistAlbums, useAlbum } from "../../hooks/spotify-api";
-import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useHeaderTransitionWithScroll } from "../../hooks/useHeaderTransitionWithScroll";
 import { useIsSavedAlbum } from "../../hooks/useIsSavedAlbum";
 import { usePlayContextURI } from "../../hooks/usePlayContextURI";
@@ -47,8 +46,6 @@ export const AlbumPage: VFC<{ albumId: string }> = ({ albumId }) => {
 };
 
 const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
-  const spotifyClient = useSpotifyClient();
-
   const { data: album } = useAlbum([albumId]);
 
   const artistId = album?.artists[0].id ?? "";
@@ -58,7 +55,7 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
   const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
     ref,
     100,
-    windowHeight * 0.3
+    windowHeight * 0.5
   );
 
   const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
@@ -101,7 +98,7 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
         </Header>
       }
     >
-      <Stack px="4" spacing="8" ref={ref}>
+      <Stack px="4" spacing="8" paddingBottom="24" ref={ref}>
         <Grid
           paddingTop="20"
           templateColumns={["1fr", "1fr", "auto 1fr"]}
