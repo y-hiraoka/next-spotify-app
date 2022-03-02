@@ -10,6 +10,7 @@ import { range } from "../../lib/range";
 import { ArtistCard, ArtistCardSkeleton } from "../shared/ArtistCard";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
 import { Header } from "../shared/Header";
+import { HScrollable } from "../shared/HScrollable";
 import { Layout } from "../shared/Layout";
 import { PageFallback } from "../shared/PageFallback";
 import { PlaylistCard, PlaylistCardSkeleton } from "../shared/PlaylistCard";
@@ -36,33 +37,33 @@ const HomePageContent: VFC = () => {
       <Stack px="4" spacing="8" marginTop="16" paddingBottom="24">
         <Stack>
           <Heading fontSize="xl">Following</Heading>
-          <Box overflowX="auto" w="full">
+          <HScrollable>
             <HStack alignItems="flex-start" spacing="5">
               <Suspense fallback={<FollowedArtistsFallback />}>
                 <FollowedArtists />
               </Suspense>
             </HStack>
-          </Box>
+          </HScrollable>
         </Stack>
         <Stack>
           <Heading fontSize="xl">Featured Playlists</Heading>
-          <Box overflowX="auto" w="full">
+          <HScrollable>
             <HStack alignItems="flex-start" spacing="5">
               <Suspense fallback={<FeaturedPlaylistsFallback />}>
                 <FeaturedPlaylists />
               </Suspense>
             </HStack>
-          </Box>
+          </HScrollable>
         </Stack>
         <Stack>
           <Heading fontSize="xl">My Top Artists</Heading>
-          <Box overflowX="auto" w="full">
+          <HScrollable>
             <HStack alignItems="flex-start" spacing="5">
               <Suspense fallback={<MyTopArtistsFallback />}>
                 <MyTopArtists />
               </Suspense>
             </HStack>
-          </Box>
+          </HScrollable>
         </Stack>
         <Stack>
           <Heading fontSize="xl">My Top Tracks</Heading>

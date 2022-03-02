@@ -189,3 +189,41 @@ export const useMySavedAlbums = (keys: [queries?: MySavedAlbumsQueries] | null) 
     client.getMySavedAlbums(queries)
   );
 };
+
+export const useSearch = (
+  keys:
+    | [
+        query: string,
+        types: ("album" | "artist" | "playlist" | "track")[],
+        queries?: SpotifyApi.SearchForItemParameterObject
+      ]
+    | null
+) => {
+  return useSpotifyData("Search", keys, (client, query, types, queries) =>
+    client.search(query, types, queries)
+  );
+};
+
+export const useAvailableGenreSeeds = () => {
+  return useSpotifyData("AvailableGenreSeeds", [], (client) =>
+    client.getAvailableGenreSeeds()
+  );
+};
+
+type CategoriesQueries = {
+  country?: string;
+  limit?: number;
+  locale?: string;
+  offset?: number;
+};
+export const useCategories = (keys: [queries?: CategoriesQueries] | null) => {
+  return useSpotifyData("Categories", keys, (client, queries) =>
+    client.getCategories(queries)
+  );
+};
+
+export const useCategoryPlaylists = (keys: [categoryId: string] | null) => {
+  return useSpotifyData("CategoryPlaylists", keys, (client, categoryId) =>
+    client.getCategoryPlaylists(categoryId)
+  );
+};

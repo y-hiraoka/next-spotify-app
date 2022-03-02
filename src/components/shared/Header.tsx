@@ -11,6 +11,7 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
@@ -19,7 +20,7 @@ import { useMe } from "../../hooks/spotify-api";
 import { pagesPath } from "../../lib/$path";
 
 export const Header: VFC<FlexProps> = ({ children, ...props }) => {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode();
 
   return (
     <Flex
@@ -27,6 +28,7 @@ export const Header: VFC<FlexProps> = ({ children, ...props }) => {
       as="header"
       py="2"
       px="4"
+      gap="2"
       alignItems="center"
       justifyContent="space-between"
     >
@@ -35,9 +37,7 @@ export const Header: VFC<FlexProps> = ({ children, ...props }) => {
         <IconButton
           aria-label="toggle theme color"
           variant="ghost"
-          icon={
-            <Icon fontSize="2xl" as={colorMode === "light" ? MdDarkMode : MdLightMode} />
-          }
+          icon={<Icon fontSize="2xl" as={useColorModeValue(MdDarkMode, MdLightMode)} />}
           onClick={toggleColorMode}
         />
         <AccountMenu />

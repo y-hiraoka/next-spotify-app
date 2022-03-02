@@ -27,6 +27,7 @@ import { AlbumCardSkeleton, AlbumCard } from "../shared/AlbumCard";
 import { ArtistCardSkeleton, ArtistCard } from "../shared/ArtistCard";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
 import { Header } from "../shared/Header";
+import { HScrollable } from "../shared/HScrollable";
 import { Layout } from "../shared/Layout";
 import { PageFallback } from "../shared/PageFallback";
 import { ResponsiveBottom } from "../shared/ResponsiveBottom";
@@ -113,7 +114,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
         <Box
           w="full"
           h="full"
-          bgImage={`url(${artist?.images[0].url})`}
+          bgImage={`url(${artist?.images[0]?.url})`}
           bgColor="transparent"
           bgSize="cover"
           bgPosition="center"
@@ -169,21 +170,25 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
               <Link>Show more</Link>
             </NextLink>
           </Flex>
-          <Flex w="full" overflowX="auto" gap="4">
-            <Suspense fallback={<AlbumsFallback />}>
-              <Albums artistId={artistId} />
-            </Suspense>
-          </Flex>
+          <HScrollable>
+            <HStack>
+              <Suspense fallback={<AlbumsFallback />}>
+                <Albums artistId={artistId} />
+              </Suspense>
+            </HStack>
+          </HScrollable>
         </Box>
         <Box>
           <Heading fontSize="3xl" marginBottom="2">
             Related Artists
           </Heading>
-          <Flex w="full" overflowX="auto" gap="4">
-            <Suspense fallback={<RelatedArtistsFallback />}>
-              <RelatedArtists artistId={artistId} />
-            </Suspense>
-          </Flex>
+          <HScrollable>
+            <HStack>
+              <Suspense fallback={<RelatedArtistsFallback />}>
+                <RelatedArtists artistId={artistId} />
+              </Suspense>
+            </HStack>
+          </HScrollable>
         </Box>
       </Stack>
     </WithHeader>

@@ -1,5 +1,7 @@
 import {
   Box,
+  Circle,
+  Icon,
   Image,
   Skeleton,
   SkeletonCircle,
@@ -9,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
+import { MdImageNotSupported } from "react-icons/md";
 import { pagesPath } from "../../lib/$path";
 
 export const ArtistCard: VFC<{ artist: SpotifyApi.ArtistObjectFull }> = ({ artist }) => {
@@ -26,7 +29,12 @@ export const ArtistCard: VFC<{ artist: SpotifyApi.ArtistObjectFull }> = ({ artis
           <Image
             height="32"
             width="32"
-            src={artist.images[1].url}
+            src={artist.images[0]?.url}
+            fallback={
+              <Circle size="32" bgColor="blackAlpha.300" color="gray.600">
+                <Icon as={MdImageNotSupported} fontSize="6xl" />
+              </Circle>
+            }
             alt={artist.name}
             borderRadius="full"
           />
