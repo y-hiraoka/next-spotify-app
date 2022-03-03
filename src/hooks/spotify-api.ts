@@ -222,8 +222,27 @@ export const useCategories = (keys: [queries?: CategoriesQueries] | null) => {
   );
 };
 
-export const useCategoryPlaylists = (keys: [categoryId: string] | null) => {
-  return useSpotifyData("CategoryPlaylists", keys, (client, categoryId) =>
-    client.getCategoryPlaylists(categoryId)
+type CategoryQueries = {
+  country?: string;
+  locale?: string;
+};
+export const useCategory = (
+  keys: [categoryId: string, queries: CategoryQueries] | null
+) => {
+  return useSpotifyData("Category", keys, (client, categoryId, queries) =>
+    client.getCategory(categoryId, queries)
+  );
+};
+
+type CategoryPlaylistsQueries = {
+  country?: string;
+  limit?: number;
+  offset?: number;
+};
+export const useCategoryPlaylists = (
+  keys: [categoryId: string, queries?: CategoryPlaylistsQueries] | null
+) => {
+  return useSpotifyData("CategoryPlaylists", keys, (client, categoryId, queries) =>
+    client.getCategoryPlaylists(categoryId, queries)
   );
 };

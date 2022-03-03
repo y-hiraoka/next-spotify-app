@@ -111,7 +111,7 @@ const SearchPageContent: VFC = () => {
 };
 
 const NoSearching: VFC = memo(() => {
-  const { data } = useCategories([{ limit: 50 }]);
+  const { data } = useCategories([{ limit: 50, country: "from_token" }]);
 
   return (
     <Stack>
@@ -122,7 +122,11 @@ const NoSearching: VFC = memo(() => {
         gap="4"
       >
         {data?.categories.items.map((category) => (
-          <NextLink key={category.id} href={""} passHref>
+          <NextLink
+            key={category.id}
+            href={pagesPath.categories._categoryId(category.id).$url()}
+            passHref
+          >
             <Box
               as="a"
               position="relative"
