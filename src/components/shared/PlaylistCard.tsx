@@ -1,12 +1,13 @@
 import { Box, Image, Skeleton, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
+import { pagesPath } from "../../lib/$path";
 
 export const PlaylistCard: VFC<{ playlist: SpotifyApi.PlaylistBaseObject }> = ({
   playlist,
 }) => {
   return (
-    <NextLink href={`/playlists/${playlist.id}`} passHref>
+    <NextLink href={pagesPath.playlists._playlistId(playlist.id).$url()} passHref>
       <Stack
         width="44"
         as="a"

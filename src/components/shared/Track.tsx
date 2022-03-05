@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
+import { pagesPath } from "../../lib/$path";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 
 export const Track: VFC<{
@@ -24,11 +25,11 @@ export const Track: VFC<{
       spacing="4"
       _hover={{ bgColor: useColorModeValue("gray.100", "gray.700") }}
     >
-      <Text as="span" w="5" textAlign="right">
+      <Text as="span" w="7" textAlign="right">
         {index + 1}
       </Text>
       {"album" in track && (
-        <NextLink href={`/albums/${track.album.id}`} passHref>
+        <NextLink href={pagesPath.albums._albumId(track.album.id).$url()} passHref>
           <Box w="10" h="10" as="a">
             <Image src={track.album.images[0].url} w="10" h="10" alt={track.album.name} />
           </Box>
@@ -45,7 +46,10 @@ export const Track: VFC<{
           fontSize="sm"
           color={useColorModeValue("gray.500", "whiteAlpha.800")}
         >
-          <NextLink href={`/artists/${track.artists[0].id}`} passHref>
+          <NextLink
+            href={pagesPath.artists._artistId(track.artists[0].id).$url()}
+            passHref
+          >
             <Link>{track.artists[0].name}</Link>
           </NextLink>
         </Text>

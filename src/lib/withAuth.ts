@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { createElement, useEffect } from "react";
 import { useAccessToken } from "../hooks/spotify-client";
+import { pagesPath } from "./$path";
 
 export function withAuth<P>(Page: NextPage<P>) {
   const WithAuth: NextPage<P> = (props) => {
@@ -10,8 +11,7 @@ export function withAuth<P>(Page: NextPage<P>) {
 
     useEffect(() => {
       if (accessToken === undefined) {
-        const from = router.asPath;
-        router.replace(`/login?from=${encodeURIComponent(from)}`);
+        router.replace(pagesPath.login.$url());
       }
     }, [accessToken, router]);
 

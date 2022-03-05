@@ -246,3 +246,46 @@ export const useCategoryPlaylists = (
     client.getCategoryPlaylists(categoryId, queries)
   );
 };
+
+type PlaylistQueries = {
+  additional_types?: "track" | "episode";
+  fields?: string;
+  market?: string;
+};
+export const usePlaylist = (
+  keys: [playlistId: string, queries?: PlaylistQueries] | null
+) => {
+  return useSpotifyData("Playlist", keys, (client, playlistId, queries) =>
+    client.getPlaylist(playlistId, queries)
+  );
+};
+
+export const useContainsMySavedPlaylist = (
+  keys: [playlistId: string, userIds: string[]] | null
+) => {
+  return useSpotifyData("ContainsMySavedTracks", keys, (client, playlistId, userIds) =>
+    client.areFollowingPlaylist(playlistId, userIds)
+  );
+};
+
+type PlaylistTracksQueries = {
+  additional_types?: "track" | "episode";
+  fields?: string;
+  market?: string;
+  limit?: number;
+  offset?: number;
+};
+
+export const usePlaylistTracks = (
+  keys: [playlistId: string, queries?: PlaylistTracksQueries] | null
+) => {
+  return useSpotifyData("PlaylistTracks", keys, (client, playlistId, queries) =>
+    client.getPlaylistTracks(playlistId, queries)
+  );
+};
+
+export const useEpisode = (keys: [episodeId: string] | null) => {
+  return useSpotifyData("Episode", keys, (client, episodeId) =>
+    client.getEpisode(episodeId)
+  );
+};
