@@ -116,7 +116,7 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
               </NextLink>
             </Flex>
             <Text
-              __css={{ "& > a": { textDecoration: "underline" } }}
+              color={useColorModeValue("gray.600", "gray.400")}
               dangerouslySetInnerHTML={{ __html: playlist?.description ?? "" }}
             />
           </Stack>
