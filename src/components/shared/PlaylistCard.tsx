@@ -20,7 +20,7 @@ export const PlaylistCard: VFC<{ playlist: SpotifyApi.PlaylistBaseObject }> = ({
           <Image
             height="32"
             width="32"
-            src={playlist.images[0].url}
+            src={playlist.images[0]?.url}
             alt={playlist.name}
             borderRadius="xl"
           />

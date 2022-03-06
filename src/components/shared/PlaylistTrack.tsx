@@ -13,6 +13,7 @@ import {
 import NextLink from "next/link";
 import { VFC } from "react";
 import { MdMusicNote, MdPodcasts } from "react-icons/md";
+import { useHoveredBgColor } from "../../hooks/useHoveredBgColor";
 import { pagesPath } from "../../lib/$path";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 
@@ -20,12 +21,7 @@ export const PlaylistTrack: VFC<{
   playlistTrack: SpotifyApi.PlaylistTrackObject;
 }> = ({ playlistTrack }) => {
   return (
-    <HStack
-      p="2"
-      height="16"
-      spacing="4"
-      _hover={{ bgColor: useColorModeValue("gray.100", "gray.700") }}
-    >
+    <HStack p="2" height="16" spacing="4" _hover={{ bgColor: useHoveredBgColor() }}>
       {playlistTrack.track.type === "episode" ? (
         <Icon as={MdPodcasts} color="gray.500" />
       ) : (

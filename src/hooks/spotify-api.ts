@@ -1,5 +1,7 @@
 import SpotifyWebApi from "spotify-web-api-js";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
+import { removeUndefined } from "../lib/removeUndefined";
 import { useSpotifyClient } from "./spotify-client";
 
 const useSpotifyData = <T, Keys extends unknown[]>(
@@ -80,6 +82,27 @@ export const useShowEpisodes = (
 ) => {
   return useSpotifyData("ShowEpisodes", keys, (client, showId, queries) =>
     client.getShowEpisodes(showId, queries)
+  );
+};
+
+type ShowEpisodesInfiniteParams = {
+  showId: string;
+  limit?: number;
+};
+export const useShowEpisodesInfinite = (params: ShowEpisodesInfiniteParams | null) => {
+  const client = useSpotifyClient();
+
+  return useSWRInfinite(
+    (_, previous: SpotifyApi.ShowEpisodesResponse | null) => {
+      if (previous && !previous.next) return null;
+      if (params === null) return null;
+
+      const offset = previous ? previous.limit + previous.offset : undefined;
+
+      return [client.getAccessToken(), "ShowEpisodesInfinite", { ...params, offset }];
+    },
+    (_token, _name, { showId, limit, offset }) =>
+      client.getShowEpisodes(showId, removeUndefined({ limit, offset }))
   );
 };
 
@@ -287,5 +310,25 @@ export const usePlaylistTracks = (
 export const useEpisode = (keys: [episodeId: string] | null) => {
   return useSpotifyData("Episode", keys, (client, episodeId) =>
     client.getEpisode(episodeId)
+  );
+};
+
+export const useShow = (keys: [showId: string] | null) => {
+  return useSpotifyData("Show", keys, (client, showId) => client.getShow(showId));
+};
+
+type MySavedShowsQueries = {
+  limit?: number;
+  offset?: number;
+};
+export const useMySavedShows = (keys: [queries?: MySavedShowsQueries] | null) => {
+  return useSpotifyData("MySavedShows", keys, (client, queries) =>
+    client.getMySavedShows(queries)
+  );
+};
+
+export const useContainsMySavedShows = (keys: [showIds: string[]] | null) => {
+  return useSpotifyData("ContainsMySavedShows", keys, (client, showIds) =>
+    client.containsMySavedShows(showIds)
   );
 };
