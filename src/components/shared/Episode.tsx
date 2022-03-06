@@ -23,7 +23,7 @@ export const Episode: VFC<{
 }> = ({ episode }) => {
   return (
     <Box position="relative">
-      <NextLink href={""} passHref>
+      <NextLink href={pagesPath.episodes._episodeId(episode.id).$url()} passHref>
         <HStack
           as="a"
           spacing="4"
