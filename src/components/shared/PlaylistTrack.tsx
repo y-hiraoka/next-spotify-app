@@ -31,7 +31,7 @@ export const PlaylistTrack: VFC<{
         href={
           playlistTrack.track.type === "episode"
             ? // @ts-expect-error an error of the .d.ts
-              `/shows/${playlistTrack.track.album.id}`
+              pagesPath.shows._showId(playlistTrack.track.album.id).$url()
             : pagesPath.albums._albumId(playlistTrack.track.album.id).$url()
         }
         passHref
@@ -57,8 +57,11 @@ export const PlaylistTrack: VFC<{
           color={useColorModeValue("gray.500", "whiteAlpha.800")}
         >
           {playlistTrack.track.type === "episode" ? (
-            // @ts-expect-error an error of the .d.ts
-            <NextLink href={`/shows/${playlistTrack.track.album.id}`} passHref>
+            <NextLink
+              // @ts-expect-error an error of the .d.ts
+              href={pagesPath.shows._showId(playlistTrack.track.album.id).$url()}
+              passHref
+            >
               {/* @ts-expect-error an error of the .d.ts */}
               <Link>{playlistTrack.track.album.name}</Link>
             </NextLink>
