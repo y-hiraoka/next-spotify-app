@@ -14,6 +14,7 @@ import NextLink from "next/link";
 import { VFC } from "react";
 import { MdMusicNote, MdPodcasts } from "react-icons/md";
 import { useHoveredBgColor } from "../../hooks/useHoveredBgColor";
+import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { pagesPath } from "../../lib/$path";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 
@@ -54,7 +55,7 @@ export const PlaylistTrack: VFC<{
           noOfLines={1}
           wordBreak="break-all"
           fontSize="sm"
-          color={useColorModeValue("gray.500", "whiteAlpha.800")}
+          color={useSecondaryTextColor()}
         >
           {playlistTrack.track.type === "episode" ? (
             <NextLink

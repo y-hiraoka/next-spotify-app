@@ -20,6 +20,7 @@ import { usePlaylist } from "../../hooks/spotify-api";
 import { useHeaderTransitionWithScroll } from "../../hooks/useHeaderTransitionWithScroll";
 import { useIsSavedPlaylist } from "../../hooks/useIsSavedPlaylist";
 import { usePlayContextURI } from "../../hooks/usePlayContextURI";
+import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
 import { Header } from "../shared/Header";
 import { Layout } from "../shared/Layout";
@@ -116,7 +117,7 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
               </NextLink>
             </Flex>
             <Text
-              color={useColorModeValue("gray.600", "gray.400")}
+              color={useSecondaryTextColor()}
               dangerouslySetInnerHTML={{ __html: playlist?.description ?? "" }}
             />
           </Stack>

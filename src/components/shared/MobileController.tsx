@@ -34,6 +34,7 @@ import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-s
 import { useWindowSize } from "react-use";
 import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
+import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
@@ -105,7 +106,7 @@ const ControllerBar: VFC = () => {
             fontSize="xs"
             noOfLines={1}
             wordBreak="break-all"
-            color={useColorModeValue("gray.500", "whiteAlpha.800")}
+            color={useSecondaryTextColor()}
           >
             {currentTrack?.artists[0].name}
           </Text>

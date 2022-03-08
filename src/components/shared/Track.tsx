@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { VFC } from "react";
+import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { pagesPath } from "../../lib/$path";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 
@@ -44,7 +45,7 @@ export const Track: VFC<{
           noOfLines={1}
           wordBreak="break-all"
           fontSize="sm"
-          color={useColorModeValue("gray.500", "whiteAlpha.800")}
+          color={useSecondaryTextColor()}
         >
           <NextLink
             href={pagesPath.artists._artistId(track.artists[0].id).$url()}

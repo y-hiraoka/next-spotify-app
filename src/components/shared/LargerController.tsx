@@ -36,6 +36,7 @@ import useSWR from "swr";
 import { useMyCurrentPlaybackState } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
+import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
@@ -82,7 +83,7 @@ export const LargerController: VFC = () => {
             fontSize="xs"
             noOfLines={1}
             wordBreak="break-all"
-            color={useColorModeValue("gray.500", "whiteAlpha.800")}
+            color={useSecondaryTextColor()}
           >
             {currentTrack?.artists[0].name}
           </Text>
