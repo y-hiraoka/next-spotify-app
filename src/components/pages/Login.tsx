@@ -1,5 +1,6 @@
 import { Button, Center, Image } from "@chakra-ui/react";
 import { VFC } from "react";
+import { staticPath } from "../../lib/$path";
 
 export const LoginPage: VFC = () => {
   return (
@@ -11,7 +12,9 @@ export const LoginPage: VFC = () => {
         size="lg"
         fontSize="2xl"
         fontWeight="bold"
-        rightIcon={<Image h="8" src="/assets/Spotify_Logo_RGB_Green.png" alt="Spotify" />}
+        rightIcon={
+          <Image h="8" src={staticPath.assets.Spotify_Logo_RGB_Green_png} alt="Spotify" />
+        }
       >
         Sign in with
       </Button>

@@ -23,7 +23,7 @@ import {
 } from "react-icons/md";
 import { useUserPlaylists } from "../../hooks/spotify-api";
 import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
-import { pagesPath } from "../../lib/$path";
+import { pagesPath, staticPath } from "../../lib/$path";
 import { range } from "../../lib/range";
 
 const useLinkColor = (isActive: boolean) => {
@@ -44,8 +44,8 @@ export const SideNavigation: VFC = () => {
         <Box as="a">
           <Image
             src={useColorModeValue(
-              "/assets/Spotify_Logo_RGB_Black.png",
-              "/assets/Spotify_Logo_RGB_White.png"
+              staticPath.assets.Spotify_Logo_RGB_Black_png,
+              staticPath.assets.Spotify_Logo_RGB_White_png
             )}
             alt="logo"
             w="full"
