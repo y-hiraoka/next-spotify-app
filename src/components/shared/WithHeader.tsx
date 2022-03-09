@@ -8,7 +8,14 @@ export const WithHeader: VFC<{
 }> = ({ header, children, onScroll }) => {
   return (
     <Grid h="full">
-      <Box gridColumn="1" gridRow="1" zIndex={1} h="max-content">
+      <Box
+        gridColumn="1"
+        gridRow="1"
+        zIndex={1}
+        h="max-content"
+        w="full"
+        overflowX="auto"
+      >
         {header}
       </Box>
       <Box w="full" gridColumn="1" gridRow="1 / 1" overflow="auto" onScroll={onScroll}>

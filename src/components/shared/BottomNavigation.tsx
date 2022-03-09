@@ -22,7 +22,7 @@ export const BottomNavigation: VFC = () => {
   const router = useRouter();
   const homeIsActive = router.pathname === pagesPath.$url().pathname;
   const searchIsActive = router.pathname === pagesPath.search.$url().pathname;
-  const libraryIsActive = router.pathname === pagesPath.library.$url().pathname;
+  const libraryIsActive = router.pathname.startsWith("/collection");
 
   return (
     <Grid
@@ -45,7 +45,7 @@ export const BottomNavigation: VFC = () => {
       />
       <NavigationLink
         label="My Library"
-        href={pagesPath.library.$url()}
+        href={pagesPath.collection.playlists.$url()}
         icon={libraryIsActive ? MdLibraryMusic : MdOutlineLibraryMusic}
         isActive={libraryIsActive}
       />

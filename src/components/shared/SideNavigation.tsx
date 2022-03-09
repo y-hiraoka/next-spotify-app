@@ -36,7 +36,7 @@ export const SideNavigation: VFC = () => {
   const router = useRouter();
   const homeIsActive = router.pathname === pagesPath.$url().pathname;
   const searchIsActive = router.pathname === pagesPath.search.$url().pathname;
-  const libraryIsActive = router.pathname === pagesPath.library.$url().pathname;
+  const libraryIsActive = router.pathname.startsWith("/collection")
 
   return (
     <Box h="full" w="60" bgColor={useColorModeValue(undefined, "gray.900")} p="5">
@@ -68,7 +68,7 @@ export const SideNavigation: VFC = () => {
         />
         <NavigationLink
           label="My Library"
-          href={pagesPath.library.$url()}
+          href={pagesPath.collection.playlists.$url()}
           icon={libraryIsActive ? MdLibraryMusic : MdOutlineLibraryMusic}
           isActive={libraryIsActive}
         />

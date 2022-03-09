@@ -33,6 +33,30 @@ export const useFollowedArtists = (keys: [queries?: FollowedArtistsQueries] | nu
   );
 };
 
+type FollowedArtistsInfiniteParams = {
+  limit?: number;
+};
+export const useFollowedArtistsInfinite = (
+  params: FollowedArtistsInfiniteParams | null
+) => {
+  const client = useSpotifyClient();
+
+  return useSWRInfinite(
+    (_, previous: SpotifyApi.UsersFollowedArtistsResponse | null) => {
+      if (previous && !previous.artists.cursors.after) return null;
+      if (params === null) return null;
+
+      return [
+        client.getAccessToken(),
+        "FollowedArtistsInfinite",
+        { ...params, after: previous?.artists.cursors.after },
+      ];
+    },
+    (_token, _name, { limit, after }) =>
+      client.getFollowedArtists(removeUndefined({ limit, after }))
+  );
+};
+
 export const useArtistTopTracks = (
   keys: [artistId: string, countryId: string] | null
 ) => {
@@ -151,6 +175,27 @@ export const useUserPlaylists = (
   );
 };
 
+type UserPlaylistsInfiniteParams = {
+  userId?: string;
+  limit?: number;
+};
+export const useUserPlaylistsInfinite = (params: UserPlaylistsInfiniteParams | null) => {
+  const client = useSpotifyClient();
+
+  return useSWRInfinite(
+    (_, previous: SpotifyApi.ListOfUsersPlaylistsResponse | null) => {
+      if (previous && !previous.next) return null;
+      if (params === null) return null;
+
+      const offset = previous ? previous.limit + previous.offset : undefined;
+
+      return [client.getAccessToken(), "UserPlaylistsInfinite", { ...params, offset }];
+    },
+    (_token, _name, { userId, limit, offset }) =>
+      client.getUserPlaylists(userId, removeUndefined({ limit, offset }))
+  );
+};
+
 type TrackQueries = {
   market?: string;
 };
@@ -210,6 +255,27 @@ type MySavedAlbumsQueries = {
 export const useMySavedAlbums = (keys: [queries?: MySavedAlbumsQueries] | null) => {
   return useSpotifyData("MySavedAlbums", keys, (client, queries) =>
     client.getMySavedAlbums(queries)
+  );
+};
+
+type MySavedAlbumsInfiniteParams = {
+  market?: string;
+  limit?: number;
+};
+export const useMySavedAlbumsInfinite = (params: MySavedAlbumsInfiniteParams | null) => {
+  const client = useSpotifyClient();
+
+  return useSWRInfinite(
+    (_, previous: SpotifyApi.UsersSavedAlbumsResponse | null) => {
+      if (previous && !previous.next) return null;
+      if (params === null) return null;
+
+      const offset = previous ? previous.limit + previous.offset : undefined;
+
+      return [client.getAccessToken(), "MySavedAlbumsInfinite", { ...params, offset }];
+    },
+    (_token, _name, { market, limit, offset }) =>
+      client.getMySavedAlbums(removeUndefined({ market, limit, offset }))
   );
 };
 
@@ -324,6 +390,26 @@ type MySavedShowsQueries = {
 export const useMySavedShows = (keys: [queries?: MySavedShowsQueries] | null) => {
   return useSpotifyData("MySavedShows", keys, (client, queries) =>
     client.getMySavedShows(queries)
+  );
+};
+
+type MySavedShowsInfiniteParams = {
+  limit?: number;
+};
+export const useMySavedShowsInfinite = (params: MySavedShowsInfiniteParams | null) => {
+  const client = useSpotifyClient();
+
+  return useSWRInfinite(
+    (_, previous: SpotifyApi.ListOfUsersShowsResponse | null) => {
+      if (previous && !previous.next) return null;
+      if (params === null) return null;
+
+      const offset = previous ? previous.limit + previous.offset : undefined;
+
+      return [client.getAccessToken(), "MySavedShowsInfinite", { ...params, offset }];
+    },
+    (_token, _name, { limit, offset }) =>
+      client.getMySavedShows(removeUndefined({ limit, offset }))
   );
 };
 
