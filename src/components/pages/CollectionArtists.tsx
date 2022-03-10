@@ -42,8 +42,7 @@ const CollectionArtistsPageContent: VFC = () => {
         <Header bgColor={useColorModeValue("white", "gray.800")}>
           <CollectionHeaderNavigation />
         </Header>
-      }
-    >
+      }>
       <Stack marginTop="20" px="4" paddingBottom="24">
         <Heading as="h1" fontSize="3xl">
           Artists
@@ -51,15 +50,14 @@ const CollectionArtistsPageContent: VFC = () => {
         <InfiniteScroll
           isDisabled={isReachingEnd}
           onReachEnd={onReachEnd}
-          targetRef={scrollTargetRef}
-        >
+          targetRef={scrollTargetRef}>
           <Wrap spacing="3">
             {artistsQueries?.map((query) =>
               query.artists.items.map((artist) => (
                 <WrapItem key={artist.id}>
                   <ArtistCard artist={artist} />
                 </WrapItem>
-              ))
+              )),
             )}
             {!isReachingEnd && (
               <>

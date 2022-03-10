@@ -14,8 +14,7 @@ export const LoginPage: VFC = () => {
         fontWeight="bold"
         rightIcon={
           <Image h="8" src={staticPath.assets.Spotify_Logo_RGB_Green_png} alt="Spotify" />
-        }
-      >
+        }>
         Sign in with
       </Button>
     </Center>

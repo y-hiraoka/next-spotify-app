@@ -57,14 +57,14 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
     useIsFollowingArtists([[artistId]]);
 
   const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
-    artist?.uri ?? ""
+    artist?.uri ?? "",
   );
 
   const ref = useRef<HTMLDivElement>(null);
   const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
     ref,
     100,
-    windowHeight * 0.5
+    windowHeight * 0.5,
   );
 
   const followOfUnFollow = useCallback(async () => {
@@ -94,8 +94,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
           <HStack
             transition="opacity 0.3s, visibility 0.3s ease"
             visibility={headerOpacity < 0.8 ? "hidden" : undefined}
-            opacity={headerOpacity < 0.8 ? 0 : 1}
-          >
+            opacity={headerOpacity < 0.8 ? 0 : 1}>
             <SpotifyColorPlayButton
               aria-label="play an artist context"
               isPlaying={isPlayingContextURI}
@@ -108,8 +107,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
             </Heading>
           </HStack>
         </Header>
-      }
-    >
+      }>
       <Box ref={ref} position="relative" height="50%">
         <Box
           w="full"
@@ -135,8 +133,7 @@ const ArtistPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
           bottom={0}
           left={0}
           p="4"
-          color="white"
-        >
+          color="white">
           {artist?.name}
         </Heading>
       </Box>

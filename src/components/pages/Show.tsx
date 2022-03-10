@@ -51,11 +51,11 @@ const ShowPageContent: VFC<{ showId: string }> = ({ showId }) => {
   const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
     ref,
     100,
-    windowHeight * 0.5
+    windowHeight * 0.5,
   );
 
   const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
-    show?.uri ?? ""
+    show?.uri ?? "",
   );
 
   const { isSavedShow, toggleIsSavedShow } = useIsSavedShow(showId);
@@ -78,8 +78,7 @@ const ShowPageContent: VFC<{ showId: string }> = ({ showId }) => {
           <HStack
             transition="opacity 0.3s, visibility 0.3s ease"
             visibility={headerOpacity < 0.8 ? "hidden" : undefined}
-            opacity={headerOpacity < 0.8 ? 0 : 1}
-          >
+            opacity={headerOpacity < 0.8 ? 0 : 1}>
             <SpotifyColorPlayButton
               aria-label="play an artist context"
               isPlaying={isPlayingContextURI}
@@ -92,8 +91,7 @@ const ShowPageContent: VFC<{ showId: string }> = ({ showId }) => {
             </Heading>
           </HStack>
         </Header>
-      }
-    >
+      }>
       <Stack px="4" spacing="8" paddingBottom="24" ref={ref}>
         <Grid
           paddingTop="20"
@@ -101,8 +99,7 @@ const ShowPageContent: VFC<{ showId: string }> = ({ showId }) => {
           justifyItems="center"
           alignItems="flex-end"
           columnGap="8"
-          rowGap="4"
-        >
+          rowGap="4">
           <Image
             w="64"
             h="64"
@@ -172,8 +169,7 @@ const Episodes: VFC<{ showId: string }> = memo(({ showId }) => {
     <InfiniteScroll
       isDisabled={isReachingEnd}
       onReachEnd={onReachEnd}
-      targetRef={loadingElementRef}
-    >
+      targetRef={loadingElementRef}>
       {data?.map((episodes) =>
         episodes.items.map((episode, index) => (
           <Fragment key={episode.id}>
@@ -181,7 +177,7 @@ const Episodes: VFC<{ showId: string }> = memo(({ showId }) => {
             <Episode episode={episode} />
             <Divider />
           </Fragment>
-        ))
+        )),
       )}
       {!isReachingEnd && (
         <Box ref={loadingElementRef}>

@@ -34,8 +34,7 @@ const CategoryPageContent: VFC<{ categoryId: string }> = ({ categoryId }) => {
             Categories: {category?.name}
           </Heading>
         </Header>
-      }
-    >
+      }>
       <Flex px="4" gap="4" pt="20" pb="24" wrap="wrap" justifyContent="center">
         {playlists?.playlists.items.map((playlist) => (
           <PlaylistCard key={playlist.id} playlist={playlist} />

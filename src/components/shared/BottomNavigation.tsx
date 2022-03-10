@@ -15,7 +15,7 @@ import { pagesPath } from "../../lib/$path";
 const useLinkColor = (isActive: boolean) =>
   useColorModeValue(
     isActive ? "gray.900" : "gray.500",
-    isActive ? "gray.100" : "gray.500"
+    isActive ? "gray.100" : "gray.500",
   );
 
 export const BottomNavigation: VFC = () => {
@@ -29,8 +29,7 @@ export const BottomNavigation: VFC = () => {
       width="full"
       templateColumns="repeat(3, 1fr)"
       bgColor={useColorModeValue("gray.200", "gray.900")}
-      px="2"
-    >
+      px="2">
       <NavigationLink
         label="Home"
         href={pagesPath.$url()}

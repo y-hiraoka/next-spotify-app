@@ -59,8 +59,7 @@ export const LargerController: VFC = () => {
       bgColor={useColorModeValue("gray.50", "gray.900")}
       px="4"
       py="2"
-      boxShadow="lg"
-    >
+      boxShadow="lg">
       <HStack width="30%" spacing="3">
         <Image
           src={currentTrack?.album.images[0].url}
@@ -74,8 +73,7 @@ export const LargerController: VFC = () => {
             fontSize="sm"
             fontWeight="bold"
             noOfLines={1}
-            wordBreak="break-all"
-          >
+            wordBreak="break-all">
             {currentTrack?.name}
           </Text>
           <Text
@@ -83,8 +81,7 @@ export const LargerController: VFC = () => {
             fontSize="xs"
             noOfLines={1}
             wordBreak="break-all"
-            color={useSecondaryTextColor()}
-          >
+            color={useSecondaryTextColor()}>
             {currentTrack?.artists[0].name}
           </Text>
         </Stack>
@@ -155,7 +152,7 @@ export const LargerController: VFC = () => {
               }
               onClick={() =>
                 spotifyClient.setRepeat(
-                  getNextRepeatMode(playbackState?.repeat_mode ?? 0)
+                  getNextRepeatMode(playbackState?.repeat_mode ?? 0),
                 )
               }
             />
@@ -195,7 +192,7 @@ const REPEAT_MODES_STRING = {
 } as const;
 
 const getNextRepeatMode = (
-  currentMode: Spotify.PlaybackState["repeat_mode"]
+  currentMode: Spotify.PlaybackState["repeat_mode"],
 ): SpotifyApi.PlaybackRepeatState => {
   const next = ((currentMode + 1) % 3) as Spotify.PlaybackState["repeat_mode"];
   return REPEAT_MODES_STRING[next];
@@ -205,7 +202,7 @@ const VolumeSeekBar: VFC = () => {
   const spotifyPlayer = useSpotifyPlayer();
   const playbackState = usePlaybackState();
   const { data = 0.5, mutate } = useSWR([playbackState], () =>
-    spotifyPlayer?.getVolume()
+    spotifyPlayer?.getVolume(),
   );
 
   const setVolume = useCallback(
@@ -213,7 +210,7 @@ const VolumeSeekBar: VFC = () => {
       spotifyPlayer?.setVolume(volume);
       mutate(volume);
     },
-    [mutate, spotifyPlayer]
+    [mutate, spotifyPlayer],
   );
 
   const beforeMuteRef = useRef<number>();
@@ -257,8 +254,7 @@ const VolumeSeekBar: VFC = () => {
         max={1}
         step={0.01}
         focusThumbOnChange={false}
-        onChange={setVolume}
-      >
+        onChange={setVolume}>
         <SliderTrack>
           <SliderFilledTrack />
         </SliderTrack>
@@ -274,8 +270,7 @@ export const LargerControllerSkeleton: VFC = () => {
       bgColor={useColorModeValue("gray.50", "gray.900")}
       px="4"
       py="2"
-      boxShadow="lg"
-    >
+      boxShadow="lg">
       <HStack width="30%" spacing="3">
         <Skeleton width="12" height="12" />
         <Stack flex="0.6">

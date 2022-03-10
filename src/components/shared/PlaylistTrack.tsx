@@ -35,8 +35,7 @@ export const PlaylistTrack: VFC<{
               pagesPath.shows._showId(playlistTrack.track.album.id).$url()
             : pagesPath.albums._albumId(playlistTrack.track.album.id).$url()
         }
-        passHref
-      >
+        passHref>
         <Box w="10" h="10" as="a">
           <Image
             src={(playlistTrack.track as SpotifyApi.TrackObjectFull).album.images[0]?.url}
@@ -55,22 +54,19 @@ export const PlaylistTrack: VFC<{
           noOfLines={1}
           wordBreak="break-all"
           fontSize="sm"
-          color={useSecondaryTextColor()}
-        >
+          color={useSecondaryTextColor()}>
           {playlistTrack.track.type === "episode" ? (
             <NextLink
               // @ts-expect-error an error of the .d.ts
               href={pagesPath.shows._showId(playlistTrack.track.album.id).$url()}
-              passHref
-            >
+              passHref>
               {/* @ts-expect-error an error of the .d.ts */}
               <Link>{playlistTrack.track.album.name}</Link>
             </NextLink>
           ) : (
             <NextLink
               href={pagesPath.artists._artistId(playlistTrack.track.artists[0].id).$url()}
-              passHref
-            >
+              passHref>
               <Link>{playlistTrack.track.artists[0].name}</Link>
             </NextLink>
           )}

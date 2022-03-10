@@ -34,8 +34,7 @@ const ArtistAlbumsPageContent: VFC<{ artistId: string }> = ({ artistId }) => {
             {artist?.name}&apos;s albums
           </Heading>
         </Header>
-      }
-    >
+      }>
       <Flex px="4" gap="4" pt="20" pb="24" wrap="wrap" justifyContent="center">
         <Suspense fallback={<AlbumsFallback />}>
           <Albums artistId={artistId} />

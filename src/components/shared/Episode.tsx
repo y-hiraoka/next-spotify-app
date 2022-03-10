@@ -29,8 +29,7 @@ export const Episode: VFC<{
           spacing="4"
           alignItems="flex-start"
           p="3"
-          _hover={{ bgColor: useHoveredBgColor() }}
-        >
+          _hover={{ bgColor: useHoveredBgColor() }}>
           <Image
             src={episode.images[0]?.url}
             alt={episode.name}
@@ -46,8 +45,7 @@ export const Episode: VFC<{
               color={useSecondaryTextColor()}
               fontSize="sm"
               noOfLines={2}
-              wordBreak="break-all"
-            >
+              wordBreak="break-all">
               {episode.description}
             </Text>
             <Flex
@@ -55,8 +53,7 @@ export const Episode: VFC<{
               fontSize="xs"
               height="10"
               alignItems="center"
-              gap="2"
-            >
+              gap="2">
               <Box>{episode.release_date}</Box>
             </Flex>
           </Stack>

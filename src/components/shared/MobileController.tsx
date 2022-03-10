@@ -82,8 +82,7 @@ const ControllerBar: VFC = () => {
         bgColor={useColorModeValue("gray.50", "gray.900")}
         p="2"
         boxShadow="lg"
-        spacing="3"
-      >
+        spacing="3">
         <Image
           src={currentTrack?.album.images[0].url}
           alt={currentTrack?.album.name}
@@ -97,8 +96,7 @@ const ControllerBar: VFC = () => {
             fontSize="sm"
             fontWeight="bold"
             noOfLines={1}
-            wordBreak="break-all"
-          >
+            wordBreak="break-all">
             {currentTrack?.name}
           </Text>
           <Text
@@ -106,8 +104,7 @@ const ControllerBar: VFC = () => {
             fontSize="xs"
             noOfLines={1}
             wordBreak="break-all"
-            color={useSecondaryTextColor()}
-          >
+            color={useSecondaryTextColor()}>
             {currentTrack?.artists[0].name}
           </Text>
         </Stack>
@@ -155,8 +152,7 @@ const ControllerBarFallback: VFC = () => {
         bgColor={useColorModeValue("gray.50", "gray.900")}
         p="2"
         boxShadow="lg"
-        spacing="3"
-      >
+        spacing="3">
         <Skeleton width="10" height="10" borderRadius="md" />
         <Stack flex={1}>
           <SkeletonText noOfLines={1} />
@@ -188,8 +184,7 @@ const ControllerDrawer: VFC<{
       onClose={onClose}
       placement="bottom"
       size="full"
-      returnFocusOnClose={false}
-    >
+      returnFocusOnClose={false}>
       <DrawerContent maxH={height}>
         <DrawerCloseButton />
         <DrawerHeader>
@@ -198,8 +193,7 @@ const ControllerDrawer: VFC<{
             fontSize="md"
             noOfLines={1}
             wordBreak="break-all"
-            paddingRight="6"
-          >
+            paddingRight="6">
             {playbackState.context.metadata.context_description}
           </Text>
         </DrawerHeader>

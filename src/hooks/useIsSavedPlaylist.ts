@@ -8,7 +8,7 @@ export const useIsSavedPlaylist = (playlistId: string | undefined | null) => {
   const { data: me } = useMe();
 
   const { data, mutate } = useContainsMySavedPlaylist(
-    playlistId && me?.id ? [playlistId, [me.id]] : null
+    playlistId && me?.id ? [playlistId, [me.id]] : null,
   );
   const { mutate: mutateUserPlaylists } = useUserPlaylists([]);
 

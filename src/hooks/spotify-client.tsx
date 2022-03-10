@@ -13,7 +13,7 @@ const fetchAccessToken = async (): Promise<string> => {
 
 const AccessTokenContext = createContext<string | undefined>(undefined);
 const SpotifyClientContext = createContext<SpotifyWebApi.SpotifyWebApiJs | undefined>(
-  undefined
+  undefined,
 );
 
 export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }) => {
@@ -32,7 +32,7 @@ export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }
 
   const getOAuthToken: WebPlaybackSDKProps["getOAuthToken"] = useCallback(
     (callback) => token && callback(token),
-    [token]
+    [token],
   );
 
   return (
@@ -43,8 +43,7 @@ export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }
         ) : (
           <WebPlaybackSDK
             getOAuthToken={getOAuthToken}
-            initialDeviceName="Yosuke Spotify App"
-          >
+            initialDeviceName="Yosuke Spotify App">
             {children}
           </WebPlaybackSDK>
         )}

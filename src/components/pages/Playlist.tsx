@@ -51,11 +51,11 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
   const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
     ref,
     100,
-    windowHeight * 0.5
+    windowHeight * 0.5,
   );
 
   const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
-    playlist?.uri ?? ""
+    playlist?.uri ?? "",
   );
 
   const { isSavedPlaylist, toggleIsSavedPlaylist } = useIsSavedPlaylist(playlistId);
@@ -78,8 +78,7 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
           <HStack
             transition="opacity 0.3s, visibility 0.3s ease"
             visibility={headerOpacity < 0.8 ? "hidden" : undefined}
-            opacity={headerOpacity < 0.8 ? 0 : 1}
-          >
+            opacity={headerOpacity < 0.8 ? 0 : 1}>
             <SpotifyColorPlayButton
               aria-label="play an artist context"
               isPlaying={isPlayingContextURI}
@@ -92,8 +91,7 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
             </Heading>
           </HStack>
         </Header>
-      }
-    >
+      }>
       <Stack px="4" spacing="8" paddingBottom="24" ref={ref}>
         <Grid
           paddingTop="20"
@@ -101,8 +99,7 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
           justifyItems="center"
           alignItems="flex-end"
           columnGap="8"
-          rowGap="4"
-        >
+          rowGap="4">
           <Image w="64" h="64" src={playlist?.images[0].url} alt={playlist?.name} />
           <Stack w="full">
             <Heading as="h1" fontSize={["3xl", "4xl", "5xl", "6xl"]}>

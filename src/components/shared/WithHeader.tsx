@@ -14,8 +14,7 @@ export const WithHeader: VFC<{
         zIndex={1}
         h="max-content"
         w="full"
-        overflowX="auto"
-      >
+        overflowX="auto">
         {header}
       </Box>
       <Box w="full" gridColumn="1" gridRow="1 / 1" overflow="auto" onScroll={onScroll}>

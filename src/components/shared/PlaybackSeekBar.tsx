@@ -23,7 +23,7 @@ export const PlaybackSeekBar: VFC<{ playbackState: Spotify.PlaybackState | null 
       setSeeking(false);
       spotifyPlayer?.seek(value);
     },
-    [spotifyPlayer]
+    [spotifyPlayer],
   );
 
   return (
@@ -37,8 +37,7 @@ export const PlaybackSeekBar: VFC<{ playbackState: Spotify.PlaybackState | null 
       focusThumbOnChange={false}
       onChangeStart={handleChangeStart}
       onChange={handleChange}
-      onChangeEnd={handleChangeEnd}
-    >
+      onChangeEnd={handleChangeEnd}>
       <SliderTrack>
         <SliderFilledTrack />
       </SliderTrack>

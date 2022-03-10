@@ -7,14 +7,14 @@ import { useSpotifyClient } from "./spotify-client";
 const useSpotifyData = <T, Keys extends unknown[]>(
   name: string,
   keys: null | Keys,
-  fetcher: (client: SpotifyWebApi.SpotifyWebApiJs, ...keys: [...Keys]) => Promise<T>
+  fetcher: (client: SpotifyWebApi.SpotifyWebApiJs, ...keys: [...Keys]) => Promise<T>,
 ) => {
   const client = useSpotifyClient();
 
   return useSWR<T>(
     keys !== null ? [client.getAccessToken(), name, keys] : null,
     (_token, _name, keys) => fetcher(client, ...keys),
-    { suspense: true }
+    { suspense: true },
   );
 };
 
@@ -29,7 +29,7 @@ type FollowedArtistsQueries = {
 };
 export const useFollowedArtists = (keys: [queries?: FollowedArtistsQueries] | null) => {
   return useSpotifyData("FollowedArtists", keys, (client, queries) =>
-    client.getFollowedArtists(queries)
+    client.getFollowedArtists(queries),
   );
 };
 
@@ -37,7 +37,7 @@ type FollowedArtistsInfiniteParams = {
   limit?: number;
 };
 export const useFollowedArtistsInfinite = (
-  params: FollowedArtistsInfiniteParams | null
+  params: FollowedArtistsInfiniteParams | null,
 ) => {
   const client = useSpotifyClient();
 
@@ -53,15 +53,15 @@ export const useFollowedArtistsInfinite = (
       ];
     },
     (_token, _name, { limit, after }) =>
-      client.getFollowedArtists(removeUndefined({ limit, after }))
+      client.getFollowedArtists(removeUndefined({ limit, after })),
   );
 };
 
 export const useArtistTopTracks = (
-  keys: [artistId: string, countryId: string] | null
+  keys: [artistId: string, countryId: string] | null,
 ) => {
   return useSpotifyData("ArtistTopTracks", keys, (client, artistId, countryId) =>
-    client.getArtistTopTracks(artistId, countryId)
+    client.getArtistTopTracks(artistId, countryId),
   );
 };
 
@@ -72,13 +72,13 @@ type MyTopItemsQueries = {
 };
 export const useMyTopArtists = (keys: [queries?: MyTopItemsQueries] | null) => {
   return useSpotifyData("MyTopArtists", keys, (client, queries) =>
-    client.getMyTopArtists(queries)
+    client.getMyTopArtists(queries),
   );
 };
 
 export const useMyTopTracks = (keys: [queries?: MyTopItemsQueries] | null) => {
   return useSpotifyData("MyTopTracks", keys, (client, queries) =>
-    client.getMyTopTracks(queries)
+    client.getMyTopTracks(queries),
   );
 };
 
@@ -90,10 +90,10 @@ type FeaturedPlaylistsQueries = {
   timestamp?: string;
 };
 export const useFeaturedPlaylists = (
-  keys: [queries?: FeaturedPlaylistsQueries] | null
+  keys: [queries?: FeaturedPlaylistsQueries] | null,
 ) => {
   return useSpotifyData("FeaturedPlaylists", keys, (client, queries) =>
-    client.getFeaturedPlaylists(queries)
+    client.getFeaturedPlaylists(queries),
   );
 };
 
@@ -102,10 +102,10 @@ type ShowEpisodesQueries = {
   offset?: number;
 };
 export const useShowEpisodes = (
-  keys: [showId: string, queries?: ShowEpisodesQueries] | null
+  keys: [showId: string, queries?: ShowEpisodesQueries] | null,
 ) => {
   return useSpotifyData("ShowEpisodes", keys, (client, showId, queries) =>
-    client.getShowEpisodes(showId, queries)
+    client.getShowEpisodes(showId, queries),
   );
 };
 
@@ -126,7 +126,7 @@ export const useShowEpisodesInfinite = (params: ShowEpisodesInfiniteParams | nul
       return [client.getAccessToken(), "ShowEpisodesInfinite", { ...params, offset }];
     },
     (_token, _name, { showId, limit, offset }) =>
-      client.getShowEpisodes(showId, removeUndefined({ limit, offset }))
+      client.getShowEpisodes(showId, removeUndefined({ limit, offset })),
   );
 };
 
@@ -139,10 +139,10 @@ type MyCurrentPlaybackStateQueries = {
   market?: string;
 };
 export const useMyCurrentPlaybackState = (
-  keys: [queries?: MyCurrentPlaybackStateQueries] | null
+  keys: [queries?: MyCurrentPlaybackStateQueries] | null,
 ) => {
   return useSpotifyData("MyCurrentPlaybackState", keys, (client, queries) =>
-    client.getMyCurrentPlaybackState(queries)
+    client.getMyCurrentPlaybackState(queries),
   );
 };
 
@@ -153,13 +153,13 @@ type MySavedTracksQueries = {
 };
 export const useMySavedTracks = (keys: [queries?: MySavedTracksQueries] | null) => {
   return useSpotifyData("MySavedTracks", keys, (client, queries) =>
-    client.getMySavedTracks(queries)
+    client.getMySavedTracks(queries),
   );
 };
 
 export const useContainsMySavedTracks = (keys: [trackIds: string[]] | null) => {
   return useSpotifyData("ContainsMySavedTracks", keys, (client, trackIds) =>
-    client.containsMySavedTracks(trackIds)
+    client.containsMySavedTracks(trackIds),
   );
 };
 
@@ -168,10 +168,10 @@ type UserPlaylistsQueries = {
   offset?: number;
 };
 export const useUserPlaylists = (
-  keys: [userId?: string, queries?: UserPlaylistsQueries] | null
+  keys: [userId?: string, queries?: UserPlaylistsQueries] | null,
 ) => {
   return useSpotifyData("UserPlaylists", keys, (client, userId, queries) =>
-    client.getUserPlaylists(userId, queries)
+    client.getUserPlaylists(userId, queries),
   );
 };
 
@@ -192,7 +192,7 @@ export const useUserPlaylistsInfinite = (params: UserPlaylistsInfiniteParams | n
       return [client.getAccessToken(), "UserPlaylistsInfinite", { ...params, offset }];
     },
     (_token, _name, { userId, limit, offset }) =>
-      client.getUserPlaylists(userId, removeUndefined({ limit, offset }))
+      client.getUserPlaylists(userId, removeUndefined({ limit, offset })),
   );
 };
 
@@ -201,13 +201,13 @@ type TrackQueries = {
 };
 export const useTrack = (keys: [trackId: string, queries?: TrackQueries] | null) => {
   return useSpotifyData("Track", keys, (client, trackId, queries) =>
-    client.getTrack(trackId, queries)
+    client.getTrack(trackId, queries),
   );
 };
 
 export const useArtistRelatedArtists = (keys: [artistId: string] | null) => {
   return useSpotifyData("ArtistRelatedArtists", keys, (client, artistId) =>
-    client.getArtistRelatedArtists(artistId)
+    client.getArtistRelatedArtists(artistId),
   );
 };
 
@@ -218,16 +218,16 @@ type ArtistAlbumsQueries = {
   offset?: number;
 };
 export const useArtistAlbums = (
-  keys: [artistId: string, queries?: ArtistAlbumsQueries] | null
+  keys: [artistId: string, queries?: ArtistAlbumsQueries] | null,
 ) => {
   return useSpotifyData("ArtistAlbums", keys, (client, artistId, queries) =>
-    client.getArtistAlbums(artistId, queries)
+    client.getArtistAlbums(artistId, queries),
   );
 };
 
 export const useIsFollowingArtists = (keys: [artistIds: string[]] | null) => {
   return useSpotifyData("IsFollowingArtists", keys, (client, artistIds) =>
-    client.isFollowingArtists(artistIds)
+    client.isFollowingArtists(artistIds),
   );
 };
 
@@ -237,13 +237,13 @@ type AlbumQueries = {
 
 export const useAlbum = (keys: [albumId: string, queries?: AlbumQueries]) => {
   return useSpotifyData("Album", keys, (client, albumId, queries) =>
-    client.getAlbum(albumId, queries)
+    client.getAlbum(albumId, queries),
   );
 };
 
 export const useContainsMySavedAlbums = (keys: [albumIds: string[]] | null) => {
   return useSpotifyData("ContainsMySavedAlbums", keys, (client, albumIds) =>
-    client.containsMySavedAlbums(albumIds)
+    client.containsMySavedAlbums(albumIds),
   );
 };
 
@@ -254,7 +254,7 @@ type MySavedAlbumsQueries = {
 };
 export const useMySavedAlbums = (keys: [queries?: MySavedAlbumsQueries] | null) => {
   return useSpotifyData("MySavedAlbums", keys, (client, queries) =>
-    client.getMySavedAlbums(queries)
+    client.getMySavedAlbums(queries),
   );
 };
 
@@ -275,7 +275,7 @@ export const useMySavedAlbumsInfinite = (params: MySavedAlbumsInfiniteParams | n
       return [client.getAccessToken(), "MySavedAlbumsInfinite", { ...params, offset }];
     },
     (_token, _name, { market, limit, offset }) =>
-      client.getMySavedAlbums(removeUndefined({ market, limit, offset }))
+      client.getMySavedAlbums(removeUndefined({ market, limit, offset })),
   );
 };
 
@@ -284,18 +284,18 @@ export const useSearch = (
     | [
         query: string,
         types: ("album" | "artist" | "playlist" | "track")[],
-        queries?: SpotifyApi.SearchForItemParameterObject
+        queries?: SpotifyApi.SearchForItemParameterObject,
       ]
-    | null
+    | null,
 ) => {
   return useSpotifyData("Search", keys, (client, query, types, queries) =>
-    client.search(query, types, queries)
+    client.search(query, types, queries),
   );
 };
 
 export const useAvailableGenreSeeds = () => {
   return useSpotifyData("AvailableGenreSeeds", [], (client) =>
-    client.getAvailableGenreSeeds()
+    client.getAvailableGenreSeeds(),
   );
 };
 
@@ -307,7 +307,7 @@ type CategoriesQueries = {
 };
 export const useCategories = (keys: [queries?: CategoriesQueries] | null) => {
   return useSpotifyData("Categories", keys, (client, queries) =>
-    client.getCategories(queries)
+    client.getCategories(queries),
   );
 };
 
@@ -316,10 +316,10 @@ type CategoryQueries = {
   locale?: string;
 };
 export const useCategory = (
-  keys: [categoryId: string, queries: CategoryQueries] | null
+  keys: [categoryId: string, queries: CategoryQueries] | null,
 ) => {
   return useSpotifyData("Category", keys, (client, categoryId, queries) =>
-    client.getCategory(categoryId, queries)
+    client.getCategory(categoryId, queries),
   );
 };
 
@@ -329,10 +329,10 @@ type CategoryPlaylistsQueries = {
   offset?: number;
 };
 export const useCategoryPlaylists = (
-  keys: [categoryId: string, queries?: CategoryPlaylistsQueries] | null
+  keys: [categoryId: string, queries?: CategoryPlaylistsQueries] | null,
 ) => {
   return useSpotifyData("CategoryPlaylists", keys, (client, categoryId, queries) =>
-    client.getCategoryPlaylists(categoryId, queries)
+    client.getCategoryPlaylists(categoryId, queries),
   );
 };
 
@@ -342,18 +342,18 @@ type PlaylistQueries = {
   market?: string;
 };
 export const usePlaylist = (
-  keys: [playlistId: string, queries?: PlaylistQueries] | null
+  keys: [playlistId: string, queries?: PlaylistQueries] | null,
 ) => {
   return useSpotifyData("Playlist", keys, (client, playlistId, queries) =>
-    client.getPlaylist(playlistId, queries)
+    client.getPlaylist(playlistId, queries),
   );
 };
 
 export const useContainsMySavedPlaylist = (
-  keys: [playlistId: string, userIds: string[]] | null
+  keys: [playlistId: string, userIds: string[]] | null,
 ) => {
   return useSpotifyData("ContainsMySavedTracks", keys, (client, playlistId, userIds) =>
-    client.areFollowingPlaylist(playlistId, userIds)
+    client.areFollowingPlaylist(playlistId, userIds),
   );
 };
 
@@ -366,16 +366,16 @@ type PlaylistTracksQueries = {
 };
 
 export const usePlaylistTracks = (
-  keys: [playlistId: string, queries?: PlaylistTracksQueries] | null
+  keys: [playlistId: string, queries?: PlaylistTracksQueries] | null,
 ) => {
   return useSpotifyData("PlaylistTracks", keys, (client, playlistId, queries) =>
-    client.getPlaylistTracks(playlistId, queries)
+    client.getPlaylistTracks(playlistId, queries),
   );
 };
 
 export const useEpisode = (keys: [episodeId: string] | null) => {
   return useSpotifyData("Episode", keys, (client, episodeId) =>
-    client.getEpisode(episodeId)
+    client.getEpisode(episodeId),
   );
 };
 
@@ -389,7 +389,7 @@ type MySavedShowsQueries = {
 };
 export const useMySavedShows = (keys: [queries?: MySavedShowsQueries] | null) => {
   return useSpotifyData("MySavedShows", keys, (client, queries) =>
-    client.getMySavedShows(queries)
+    client.getMySavedShows(queries),
   );
 };
 
@@ -409,12 +409,12 @@ export const useMySavedShowsInfinite = (params: MySavedShowsInfiniteParams | nul
       return [client.getAccessToken(), "MySavedShowsInfinite", { ...params, offset }];
     },
     (_token, _name, { limit, offset }) =>
-      client.getMySavedShows(removeUndefined({ limit, offset }))
+      client.getMySavedShows(removeUndefined({ limit, offset })),
   );
 };
 
 export const useContainsMySavedShows = (keys: [showIds: string[]] | null) => {
   return useSpotifyData("ContainsMySavedShows", keys, (client, showIds) =>
-    client.containsMySavedShows(showIds)
+    client.containsMySavedShows(showIds),
   );
 };

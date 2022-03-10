@@ -41,8 +41,7 @@ const CollectionPlaylistsPageContent: VFC = () => {
         <Header bgColor={useColorModeValue("white", "gray.800")}>
           <CollectionHeaderNavigation />
         </Header>
-      }
-    >
+      }>
       <Stack marginTop="20" px="4" paddingBottom="24">
         <Heading as="h1" fontSize="3xl">
           Playlists
@@ -50,15 +49,14 @@ const CollectionPlaylistsPageContent: VFC = () => {
         <InfiniteScroll
           isDisabled={isReachingEnd}
           onReachEnd={onReachEnd}
-          targetRef={scrollTargetRef}
-        >
+          targetRef={scrollTargetRef}>
           <Wrap spacing="3">
             {playlistsQueries?.map((query) =>
               query.items.map((playlist) => (
                 <WrapItem key={playlist.id}>
                   <PlaylistCard playlist={playlist} />
                 </WrapItem>
-              ))
+              )),
             )}
             {!isReachingEnd && (
               <>

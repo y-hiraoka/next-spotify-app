@@ -36,7 +36,7 @@ export const SideNavigation: VFC = () => {
   const router = useRouter();
   const homeIsActive = router.pathname === pagesPath.$url().pathname;
   const searchIsActive = router.pathname === pagesPath.search.$url().pathname;
-  const libraryIsActive = router.pathname.startsWith("/collection")
+  const libraryIsActive = router.pathname.startsWith("/collection");
 
   return (
     <Box h="full" w="60" bgColor={useColorModeValue(undefined, "gray.900")} p="5">
@@ -45,7 +45,7 @@ export const SideNavigation: VFC = () => {
           <Image
             src={useColorModeValue(
               staticPath.assets.Spotify_Logo_RGB_Black_png,
-              staticPath.assets.Spotify_Logo_RGB_White_png
+              staticPath.assets.Spotify_Logo_RGB_White_png,
             )}
             alt="logo"
             w="full"
@@ -93,8 +93,7 @@ const NavigationLink: VFC<{
         as="a"
         color={useLinkColor(isActive)}
         transition="color 0.2s ease"
-        _hover={{ color: useColorModeValue("gray.900", "gray.100") }}
-      >
+        _hover={{ color: useColorModeValue("gray.900", "gray.100") }}>
         <Icon as={icon} fontSize="3xl" />
         <Text as="span" fontWeight={isActive ? "bold" : undefined}>
           {label}
@@ -131,8 +130,7 @@ const PlaylistLink: VFC<{
       <Link
         noOfLines={1}
         color={useLinkColor(isActive)}
-        fontWeight={isActive ? "bold" : undefined}
-      >
+        fontWeight={isActive ? "bold" : undefined}>
         {playlist.name}
       </Link>
     </NextLink>

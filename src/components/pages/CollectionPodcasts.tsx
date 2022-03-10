@@ -41,8 +41,7 @@ const CollectionPodcastsPageContent: VFC = () => {
         <Header bgColor={useColorModeValue("white", "gray.800")}>
           <CollectionHeaderNavigation />
         </Header>
-      }
-    >
+      }>
       <Stack marginTop="20" px="4" paddingBottom="24">
         <Heading as="h1" fontSize="3xl">
           Podcasts
@@ -50,15 +49,14 @@ const CollectionPodcastsPageContent: VFC = () => {
         <InfiniteScroll
           isDisabled={isReachingEnd}
           onReachEnd={onReachEnd}
-          targetRef={scrollTargetRef}
-        >
+          targetRef={scrollTargetRef}>
           <Wrap spacing="3">
             {showsQueries?.map((query) =>
               query.items.map(({ show }) => (
                 <WrapItem key={show.id}>
                   <ShowCard show={show} />
                 </WrapItem>
-              ))
+              )),
             )}
             {!isReachingEnd && (
               <>

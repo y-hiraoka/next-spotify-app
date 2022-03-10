@@ -24,8 +24,7 @@ export const Track: VFC<{
       p="2"
       height="16"
       spacing="4"
-      _hover={{ bgColor: useColorModeValue("gray.100", "gray.700") }}
-    >
+      _hover={{ bgColor: useColorModeValue("gray.100", "gray.700") }}>
       <Text as="span" w="7" textAlign="right">
         {index + 1}
       </Text>
@@ -45,12 +44,10 @@ export const Track: VFC<{
           noOfLines={1}
           wordBreak="break-all"
           fontSize="sm"
-          color={useSecondaryTextColor()}
-        >
+          color={useSecondaryTextColor()}>
           <NextLink
             href={pagesPath.artists._artistId(track.artists[0].id).$url()}
-            passHref
-          >
+            passHref>
             <Link>{track.artists[0].name}</Link>
           </NextLink>
         </Text>

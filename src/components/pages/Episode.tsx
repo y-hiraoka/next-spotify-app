@@ -47,11 +47,11 @@ const EpisodePageContent: VFC<{ episodeId: string }> = ({ episodeId }) => {
   const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
     ref,
     100,
-    windowHeight * 0.5
+    windowHeight * 0.5,
   );
 
   const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
-    episode?.uri ?? ""
+    episode?.uri ?? "",
   );
 
   return (
@@ -72,8 +72,7 @@ const EpisodePageContent: VFC<{ episodeId: string }> = ({ episodeId }) => {
           <HStack
             transition="opacity 0.3s, visibility 0.3s ease"
             visibility={headerOpacity < 0.8 ? "hidden" : undefined}
-            opacity={headerOpacity < 0.8 ? 0 : 1}
-          >
+            opacity={headerOpacity < 0.8 ? 0 : 1}>
             <SpotifyColorPlayButton
               aria-label="play an artist context"
               isPlaying={isPlayingContextURI}
@@ -86,8 +85,7 @@ const EpisodePageContent: VFC<{ episodeId: string }> = ({ episodeId }) => {
             </Heading>
           </HStack>
         </Header>
-      }
-    >
+      }>
       <Stack px="4" spacing="8" paddingBottom="24" ref={ref}>
         <Grid
           paddingTop="20"
@@ -95,8 +93,7 @@ const EpisodePageContent: VFC<{ episodeId: string }> = ({ episodeId }) => {
           justifyItems="center"
           alignItems="flex-end"
           columnGap="8"
-          rowGap="4"
-        >
+          rowGap="4">
           <Image
             w="64"
             h="64"
@@ -111,8 +108,7 @@ const EpisodePageContent: VFC<{ episodeId: string }> = ({ episodeId }) => {
             <Heading marginTop="4" fontSize="xl">
               <NextLink
                 href={pagesPath.shows._showId(episode?.show.id ?? "").$url()}
-                passHref
-              >
+                passHref>
                 <Link>{episode?.show.publisher}</Link>
               </NextLink>
             </Heading>
@@ -135,8 +131,7 @@ const EpisodePageContent: VFC<{ episodeId: string }> = ({ episodeId }) => {
         <Text>
           <NextLink
             href={pagesPath.shows._showId(episode?.show.id ?? "").$url()}
-            passHref
-          >
+            passHref>
             <Link>View all episodes</Link>
           </NextLink>
         </Text>

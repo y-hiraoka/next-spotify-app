@@ -55,11 +55,11 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
   const { headerOpacity, scrollHandler } = useHeaderTransitionWithScroll(
     ref,
     100,
-    windowHeight * 0.5
+    windowHeight * 0.5,
   );
 
   const { isPlayingContextURI, togglePlayContextURI } = usePlayContextURI(
-    album?.uri ?? ""
+    album?.uri ?? "",
   );
 
   const { isSavedAlbum, toggleIsSavedAlbum } = useIsSavedAlbum(albumId);
@@ -82,8 +82,7 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
           <HStack
             transition="opacity 0.3s, visibility 0.3s ease"
             visibility={headerOpacity < 0.8 ? "hidden" : undefined}
-            opacity={headerOpacity < 0.8 ? 0 : 1}
-          >
+            opacity={headerOpacity < 0.8 ? 0 : 1}>
             <SpotifyColorPlayButton
               aria-label="play an artist context"
               isPlaying={isPlayingContextURI}
@@ -96,8 +95,7 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
             </Heading>
           </HStack>
         </Header>
-      }
-    >
+      }>
       <Stack px="4" spacing="8" paddingBottom="24" ref={ref}>
         <Grid
           paddingTop="20"
@@ -105,8 +103,7 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
           justifyItems="center"
           alignItems="flex-end"
           columnGap="8"
-          rowGap="4"
-        >
+          rowGap="4">
           <Image w="64" h="64" src={album?.images[0].url} alt={album?.name} />
           <Box w="full">
             <Text as="span">{album?.album_type}</Text>
@@ -153,8 +150,7 @@ const AlbumPageContent: VFC<{ albumId: string }> = ({ albumId }) => {
           <Heading
             fontSize="3xl"
             title={`${album?.artists[0].name}'s other albums`}
-            noOfLines={1}
-          >
+            noOfLines={1}>
             {album?.artists[0].name}&apos;s other albums
           </Heading>
           <Flex w="full" overflowX="auto" gap="4">

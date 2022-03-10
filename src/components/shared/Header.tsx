@@ -29,8 +29,7 @@ export const Header: VFC<FlexProps> = ({ children, ...props }) => {
       px="4"
       gap="2"
       alignItems="center"
-      justifyContent="space-between"
-    >
+      justifyContent="space-between">
       <Box flex={1} py="2" overflowX="auto">
         {children}
       </Box>

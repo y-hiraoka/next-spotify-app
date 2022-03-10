@@ -93,8 +93,7 @@ const SearchPageContent: VFC = () => {
             </InputRightElement>
           </InputGroup>
         </Header>
-      }
-    >
+      }>
       <Box px="4" marginTop="16" marginBottom="24">
         {debouncedQuery ? (
           <Suspense fallback={<PageFallback />}>
@@ -119,22 +118,19 @@ const NoSearching: VFC = memo(() => {
       <Grid
         templateColumns="repeat(auto-fill, minmax(132px, 1fr))"
         templateRows="repeat(auto-fill, minmax(132px, 1fr))"
-        gap="4"
-      >
+        gap="4">
         {data?.categories.items.map((category) => (
           <NextLink
             key={category.id}
             href={pagesPath.categories._categoryId(category.id).$url()}
-            passHref
-          >
+            passHref>
             <Box
               as="a"
               position="relative"
               boxShadow="md"
               bgColor="lightblue"
               w="full"
-              h="full"
-            >
+              h="full">
               <Image
                 src={category.icons[0].url}
                 alt=""
@@ -148,8 +144,7 @@ const NoSearching: VFC = memo(() => {
                 left="0"
                 px="2"
                 w="full"
-                color="white"
-              >
+                color="white">
                 {category.name}
               </Text>
             </Box>
@@ -162,7 +157,7 @@ const NoSearching: VFC = memo(() => {
 
 const SearchResult: VFC<{ query: string }> = memo(({ query }) => {
   const { data: searched } = useSearch(
-    query ? [query, ["album", "artist", "playlist", "track"], { limit: 6 }] : null
+    query ? [query, ["album", "artist", "playlist", "track"], { limit: 6 }] : null,
   );
 
   const notFound =

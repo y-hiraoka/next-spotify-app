@@ -20,8 +20,7 @@ export const ShowCard: VFC<{ show: SpotifyApi.ShowObjectSimplified }> = ({ show 
         borderRadius="lg"
         p="6"
         bgColor={useColorModeValue("gray.100", "gray.700")}
-        _hover={{ bgColor: useColorModeValue("gray.200", "gray.600") }}
-      >
+        _hover={{ bgColor: useColorModeValue("gray.200", "gray.600") }}>
         <Box height="32" width="32">
           <Image
             height="32"
@@ -36,8 +35,7 @@ export const ShowCard: VFC<{ show: SpotifyApi.ShowObjectSimplified }> = ({ show 
           fontWeight="bold"
           noOfLines={1}
           wordBreak="break-all"
-          title={show.name}
-        >
+          title={show.name}>
           {show.name}
         </Text>
         <Text as="span" noOfLines={1} fontSize="sm">

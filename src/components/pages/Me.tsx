@@ -41,8 +41,7 @@ const MePageContent: VFC = () => {
           fontSize="xl"
           textAlign="center"
           noOfLines={2}
-          wordBreak="break-all"
-        >
+          wordBreak="break-all">
           {me?.display_name}
         </Heading>
         <Button
@@ -51,8 +50,7 @@ const MePageContent: VFC = () => {
           href="https://www.spotify.com/account/profile/"
           size="sm"
           target="_blank"
-          rel="noopener noreferrer"
-        >
+          rel="noopener noreferrer">
           Edit my profile
         </Button>
       </VStack>
