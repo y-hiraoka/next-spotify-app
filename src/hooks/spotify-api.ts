@@ -352,7 +352,7 @@ export const usePlaylist = (
 export const useContainsMySavedPlaylist = (
   keys: [playlistId: string, userIds: string[]] | null,
 ) => {
-  return useSpotifyData("ContainsMySavedTracks", keys, (client, playlistId, userIds) =>
+  return useSpotifyData("ContainsMySavedPlaylist", keys, (client, playlistId, userIds) =>
     client.areFollowingPlaylist(playlistId, userIds),
   );
 };
@@ -416,5 +416,15 @@ export const useMySavedShowsInfinite = (params: MySavedShowsInfiniteParams | nul
 export const useContainsMySavedShows = (keys: [showIds: string[]] | null) => {
   return useSpotifyData("ContainsMySavedShows", keys, (client, showIds) =>
     client.containsMySavedShows(showIds),
+  );
+};
+
+export const useUser = (keys: [userId: string] | null) => {
+  return useSpotifyData("User", keys, (client, userId) => client.getUser(userId));
+};
+
+export const useIsFollowingUsers = (keys: [userIds: string[]] | null) => {
+  return useSpotifyData("IsFollowingUsers", keys, (client, userIds) =>
+    client.isFollowingUsers(userIds),
   );
 };

@@ -21,6 +21,7 @@ import { useHeaderTransitionWithScroll } from "../../hooks/useHeaderTransitionWi
 import { useIsSavedPlaylist } from "../../hooks/useIsSavedPlaylist";
 import { usePlayContextURI } from "../../hooks/usePlayContextURI";
 import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
+import { pagesPath } from "../../lib/$path";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
 import { Header } from "../shared/Header";
 import { Layout } from "../shared/Layout";
@@ -109,7 +110,7 @@ const PlaylistPageContent: VFC<{ playlistId: string }> = ({ playlistId }) => {
               <Text as="span" mr="2">
                 Owned by
               </Text>
-              <NextLink href={"/users/userId"}>
+              <NextLink href={pagesPath.users._userId(playlist?.owner.id ?? "").$url()}>
                 <Link fontWeight="bold">{playlist?.owner.display_name}</Link>
               </NextLink>
             </Flex>
