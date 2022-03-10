@@ -5,9 +5,9 @@ import { VFC } from "react";
 import { UrlObject } from "url";
 import { pagesPath } from "../../lib/$path";
 
-export const CollectionHeaderNavigation: VFC = () => {
+export const CollectionNavigation: VFC = () => {
   return (
-    <HStack w="fit-content">
+    <HStack>
       <NavigationLink href={pagesPath.collection.playlists.$url()} label="Playlists" />
       <NavigationLink href={pagesPath.collection.podcasts.$url()} label="Podcasts" />
       <NavigationLink href={pagesPath.collection.artists.$url()} label="Artists" />

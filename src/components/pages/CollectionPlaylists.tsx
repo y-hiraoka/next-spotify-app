@@ -2,7 +2,7 @@ import { Heading, Stack, useColorModeValue, Wrap, WrapItem } from "@chakra-ui/re
 import { Suspense, useCallback, useRef, VFC } from "react";
 import { useUserPlaylistsInfinite } from "../../hooks/spotify-api";
 import { range } from "../../lib/range";
-import { CollectionHeaderNavigation } from "../shared/CollectionHeaderContent";
+import { CollectionNavigation } from "../shared/CollectionNavigation";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
 import { Header } from "../shared/Header";
 import { InfiniteScroll } from "../shared/InfiniteScroll";
@@ -36,13 +36,9 @@ const CollectionPlaylistsPageContent: VFC = () => {
   const scrollTargetRef = useRef<HTMLLIElement>(null);
 
   return (
-    <WithHeader
-      header={
-        <Header bgColor={useColorModeValue("white", "gray.800")}>
-          <CollectionHeaderNavigation />
-        </Header>
-      }>
-      <Stack marginTop="20" px="4" paddingBottom="24">
+    <WithHeader header={<Header bgColor={useColorModeValue("white", "gray.800")} />}>
+      <Stack marginTop="16" px="4" paddingBottom="24">
+        <CollectionNavigation />
         <Heading as="h1" fontSize="3xl">
           Playlists
         </Heading>

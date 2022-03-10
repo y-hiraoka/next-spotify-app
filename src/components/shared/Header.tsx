@@ -27,12 +27,11 @@ export const Header: VFC<FlexProps> = ({ children, ...props }) => {
       {...props}
       as="header"
       px="4"
+      py="2"
       gap="2"
       alignItems="center"
       justifyContent="space-between">
-      <Box flex={1} py="2" overflowX="auto">
-        {children}
-      </Box>
+      <Box flex={1}>{children}</Box>
       <HStack>
         <IconButton
           aria-label="toggle theme color"
