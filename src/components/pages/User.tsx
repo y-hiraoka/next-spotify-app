@@ -17,6 +17,7 @@ import { useWindowSize } from "react-use";
 import { useUser, useUserPlaylists } from "../../hooks/spotify-api";
 import { useHeaderTransitionWithScroll } from "../../hooks/useHeaderTransitionWithScroll";
 import { useIsFollowingUser } from "../../hooks/useIsFollowingUser";
+import { pagesPath } from "../../lib/$path";
 import { range } from "../../lib/range";
 import { ErrorBoundary } from "../shared/ErrorBoundary";
 import { Header } from "../shared/Header";
@@ -111,7 +112,7 @@ const UserPageContent: VFC<{ userId: string }> = ({ userId }) => {
         <Stack>
           <Flex alignItems="center" justifyContent="space-between">
             <Heading fontSize="3xl">Playlists</Heading>
-            <NextLink href="" passHref>
+            <NextLink href={pagesPath.users._userId(userId).playlists.$url()} passHref>
               <Link>Show more</Link>
             </NextLink>
           </Flex>
