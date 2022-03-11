@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Stack } from "@chakra-ui/react";
+import { Box, Heading, HStack, Stack, useColorModeValue } from "@chakra-ui/react";
 import { memo, Suspense, VFC } from "react";
 import {
   useFollowedArtists,
@@ -33,7 +33,7 @@ export const HomePage: VFC = () => {
 
 const HomePageContent: VFC = () => {
   return (
-    <WithHeader header={<Header position="relative" />}>
+    <WithHeader header={<Header bgColor={useColorModeValue("white", "gray.800")} />}>
       <Stack px="4" spacing="8" marginTop="16" paddingBottom="24">
         <Stack>
           <Heading fontSize="xl">Following</Heading>
