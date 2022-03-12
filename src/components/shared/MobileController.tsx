@@ -20,8 +20,9 @@ import {
   Skeleton,
   SkeletonText,
 } from "@chakra-ui/react";
-import { Suspense, VFC } from "react";
+import { Suspense, useEffect, VFC } from "react";
 import {
+  MdDevices,
   MdFavorite,
   MdFavoriteBorder,
   MdPause,
@@ -32,10 +33,12 @@ import {
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import { useWindowSize } from "react-use";
+import { useMyDevices } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
 import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { formatDurationMS } from "../../lib/formatDurationMS";
+import { MyDevices } from "./MyDevices";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
 
@@ -69,6 +72,12 @@ export const MobileController: VFC = () => {
 };
 
 const ControllerBar: VFC = () => {
+  const {
+    isOpen: devicesDrawerIsOpen,
+    onOpen: onOpenDevicesDrawer,
+    onClose: onCloseDevicesDrawer,
+  } = useDisclosure();
+
   const playbackState = usePlaybackState();
   const currentTrack = playbackState?.track_window.current_track;
 
@@ -77,71 +86,80 @@ const ControllerBar: VFC = () => {
   const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
   return (
-    <Box borderRadius="md" overflow="hidden">
-      <HStack
-        bgColor={useColorModeValue("gray.50", "gray.900")}
-        p="2"
-        boxShadow="lg"
-        spacing="3">
-        <Image
-          src={currentTrack?.album.images[0].url}
-          alt={currentTrack?.album.name}
-          width="10"
-          height="10"
-          borderRadius="md"
-        />
-        <Stack spacing="0" flex={1}>
-          <Text
-            as="div"
-            fontSize="sm"
-            fontWeight="bold"
-            noOfLines={1}
-            wordBreak="break-all">
-            {currentTrack?.name}
-          </Text>
-          <Text
-            as="div"
-            fontSize="xs"
-            noOfLines={1}
-            wordBreak="break-all"
-            color={useSecondaryTextColor()}>
-            {currentTrack?.artists[0].name}
-          </Text>
-        </Stack>
-        <HStack>
-          <IconButton
-            role="checkbox"
-            aria-label="toggle saved"
-            aria-checked={isSavedTrack}
-            icon={
-              <Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="3xl" />
-            }
-            onClick={toggleIsSavedTrack}
-            variant="ghost"
-            color={isSavedTrack ? "green.600" : undefined}
+    <>
+      <Box borderRadius="md" overflow="hidden">
+        <HStack
+          bgColor={useColorModeValue("gray.50", "gray.900")}
+          p="2"
+          boxShadow="lg"
+          spacing="3">
+          <Image
+            src={currentTrack?.album.images[0].url}
+            alt={currentTrack?.album.name}
+            width="10"
+            height="10"
+            borderRadius="md"
           />
-          <IconButton
-            aria-label="toggle play"
-            icon={
-              <Icon as={playbackState?.paused ? MdPlayArrow : MdPause} fontSize="3xl" />
-            }
-            onClick={() => spotifyPlayer?.togglePlay()}
-            variant="ghost"
-            // color="gray.100"
-          />
+          <Stack spacing="0" flex={1}>
+            <Text
+              as="div"
+              fontSize="sm"
+              fontWeight="bold"
+              noOfLines={1}
+              wordBreak="break-all">
+              {currentTrack?.name}
+            </Text>
+            <Text
+              as="div"
+              fontSize="xs"
+              noOfLines={1}
+              wordBreak="break-all"
+              color={useSecondaryTextColor()}>
+              {currentTrack?.artists[0].name}
+            </Text>
+          </Stack>
+          <HStack spacing="1.5">
+            <IconButton
+              aria-label="open devices drawer"
+              icon={<Icon as={MdDevices} fontSize="2xl" />}
+              onClick={onOpenDevicesDrawer}
+              variant="ghost"
+            />
+            <IconButton
+              role="checkbox"
+              aria-label="toggle saved"
+              aria-checked={isSavedTrack}
+              icon={
+                <Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="3xl" />
+              }
+              onClick={toggleIsSavedTrack}
+              variant="ghost"
+              color={isSavedTrack ? "green.600" : undefined}
+            />
+            <IconButton
+              aria-label="toggle play"
+              icon={
+                <Icon as={playbackState?.paused ? MdPlayArrow : MdPause} fontSize="3xl" />
+              }
+              onClick={() => spotifyPlayer?.togglePlay()}
+              variant="ghost"
+              // color="gray.100"
+            />
+          </HStack>
         </HStack>
-      </HStack>
-      <WithPlaybackState
-        render={(playbackState) => (
-          <Progress
-            value={playbackState?.position}
-            max={playbackState?.duration}
-            h="2px"
-            colorScheme="green"
-          />
-        )}
-      />
-    </Box>
+        <WithPlaybackState
+          render={(playbackState) => (
+            <Progress
+              value={playbackState?.position}
+              max={playbackState?.duration}
+              h="2px"
+              colorScheme="green"
+            />
+          )}
+        />
+      </Box>
+      <DevicesDrawer isOpen={devicesDrawerIsOpen} onClose={onCloseDevicesDrawer} />
+    </>
   );
 };
 
@@ -291,6 +309,45 @@ const ControllerDrawer: VFC<{
             </HStack>
           </Stack>
         </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
+const DevicesDrawer: VFC<{
+  isOpen: boolean;
+  onClose: () => void;
+}> = ({ isOpen, onClose }) => {
+  const { height } = useWindowSize();
+
+  const { mutate } = useMyDevices();
+
+  useEffect(() => {
+    if (isOpen) mutate();
+  }, [isOpen, mutate]);
+
+  return (
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      placement="bottom"
+      size="full"
+      returnFocusOnClose={false}>
+      <DrawerContent maxH={height}>
+        <DrawerCloseButton />
+        <DrawerHeader>
+          <Heading
+            as="h3"
+            fontSize="md"
+            noOfLines={1}
+            wordBreak="break-all"
+            paddingRight="6">
+            Connect your devices
+          </Heading>
+        </DrawerHeader>
+        <DrawerBody>
+          <MyDevices />
+        </DrawerBody>
       </DrawerContent>
     </Drawer>
   );

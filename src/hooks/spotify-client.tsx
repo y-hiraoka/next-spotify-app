@@ -41,9 +41,7 @@ export const SpotifyClientProvider: VFC<{ children: ReactNode }> = ({ children }
         {token === undefined && error === undefined ? (
           <Progress size="xs" isIndeterminate />
         ) : (
-          <WebPlaybackSDK
-            getOAuthToken={getOAuthToken}
-            initialDeviceName="Yosuke Spotify App">
+          <WebPlaybackSDK getOAuthToken={getOAuthToken} initialDeviceName="Spotify Clone">
             {children}
           </WebPlaybackSDK>
         )}

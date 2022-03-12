@@ -14,9 +14,17 @@ import {
   VStack,
   Skeleton,
   SkeletonText,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverHeader,
+  PopoverBody,
+  Heading,
 } from "@chakra-ui/react";
-import { useCallback, useRef, VFC } from "react";
+import { useCallback, useEffect, useRef, VFC } from "react";
 import {
+  MdDevices,
   MdFavorite,
   MdFavoriteBorder,
   MdPause,
@@ -33,11 +41,12 @@ import {
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import useSWR from "swr";
-import { useMyCurrentPlaybackState } from "../../hooks/spotify-api";
+import { useMyCurrentPlaybackState, useMyDevices } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
 import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 import { formatDurationMS } from "../../lib/formatDurationMS";
+import { MyDevices } from "./MyDevices";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
 import { WithPlaybackState } from "./WithPlaybackState";
 
@@ -173,6 +182,7 @@ export const LargerController: VFC = () => {
         </VStack>
       </Box>
       <HStack width="30%" justifyContent="flex-end">
+        <Popover>{({ isOpen }) => <DevicesPopoverContent isOpen={isOpen} />}</Popover>
         <VolumeSeekBar />
       </HStack>
     </HStack>
@@ -196,6 +206,38 @@ const getNextRepeatMode = (
 ): SpotifyApi.PlaybackRepeatState => {
   const next = ((currentMode + 1) % 3) as Spotify.PlaybackState["repeat_mode"];
   return REPEAT_MODES_STRING[next];
+};
+
+const DevicesPopoverContent: VFC<{ isOpen: boolean }> = ({ isOpen }) => {
+  const { mutate } = useMyDevices();
+
+  useEffect(() => {
+    if (isOpen) mutate();
+  }, [isOpen, mutate]);
+
+  return (
+    <>
+      <PopoverTrigger>
+        <IconButton
+          aria-label="open devices drawer"
+          icon={<Icon as={MdDevices} fontSize="lg" />}
+          variant="ghost"
+          size="sm"
+        />
+      </PopoverTrigger>
+      <PopoverContent>
+        <PopoverArrow />
+        <PopoverHeader py="4">
+          <Heading as="h3" fontSize="xl" textAlign="center">
+            Connect devices
+          </Heading>
+        </PopoverHeader>
+        <PopoverBody>
+          <MyDevices />
+        </PopoverBody>
+      </PopoverContent>
+    </>
+  );
 };
 
 const VolumeSeekBar: VFC = () => {

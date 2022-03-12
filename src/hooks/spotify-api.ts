@@ -428,3 +428,7 @@ export const useIsFollowingUsers = (keys: [userIds: string[]] | null) => {
     client.isFollowingUsers(userIds),
   );
 };
+
+export const useMyDevices = () => {
+  return useSpotifyData("MyDevices", [], (client) => client.getMyDevices());
+};
