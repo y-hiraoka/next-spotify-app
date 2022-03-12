@@ -42,26 +42,34 @@ import {
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import useSWR from "swr";
 import { useMyCurrentPlaybackState, useMyDevices } from "../../hooks/spotify-api";
-import { useSpotifyClient } from "../../hooks/spotify-client";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
-import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
+import { usePlayerController } from "../../hooks/usePlayerController";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 import { MyDevices } from "./MyDevices";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
+import { SecondaryText } from "./SecondaryText";
 import { WithPlaybackState } from "./WithPlaybackState";
 
 export const LargerController: VFC = () => {
-  const spotifyPlayer = useSpotifyPlayer();
-  const spotifyClient = useSpotifyClient();
   const playbackState = usePlaybackState();
-  const myCurrentPlaybackState = useMyCurrentPlaybackState([]);
+  const { data: myCurrentPlaybackState } = useMyCurrentPlaybackState([]);
+
   const currentTrack =
-    playbackState?.track_window.current_track ?? myCurrentPlaybackState.data?.item;
+    playbackState?.track_window.current_track ?? myCurrentPlaybackState?.item;
 
   const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
 
-  const shuffleState =
-    myCurrentPlaybackState.data?.shuffle_state ?? playbackState?.shuffle;
+  const {
+    playerIsActive,
+    isPlaying,
+    togglePlay,
+    skipToNext,
+    skipToPrevious,
+    repeatMode,
+    changeRepeatMode,
+    shuffleState,
+    toggleShuffleState,
+  } = usePlayerController();
 
   return (
     <HStack
@@ -70,40 +78,41 @@ export const LargerController: VFC = () => {
       py="2"
       boxShadow="lg">
       <HStack width="30%" spacing="3">
-        <Image
-          src={currentTrack?.album.images[0].url}
-          alt={currentTrack?.album.name}
-          width="12"
-          height="12"
-        />
-        <Stack spacing="0">
-          <Text
-            as="div"
-            fontSize="sm"
-            fontWeight="bold"
-            noOfLines={1}
-            wordBreak="break-all">
-            {currentTrack?.name}
-          </Text>
-          <Text
-            as="div"
-            fontSize="xs"
-            noOfLines={1}
-            wordBreak="break-all"
-            color={useSecondaryTextColor()}>
-            {currentTrack?.artists[0].name}
-          </Text>
-        </Stack>
-        <IconButton
-          role="checkbox"
-          aria-label="toggle saved"
-          aria-checked={isSavedTrack}
-          size="sm"
-          icon={<Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="xl" />}
-          onClick={toggleIsSavedTrack}
-          variant="ghost"
-          color={isSavedTrack ? "green.600" : undefined}
-        />
+        {currentTrack && (
+          <>
+            <Image
+              src={currentTrack.album.images[0].url}
+              alt={currentTrack.album.name}
+              width="12"
+              height="12"
+            />
+            <Stack spacing="0">
+              <Text
+                as="div"
+                fontSize="sm"
+                fontWeight="bold"
+                noOfLines={1}
+                wordBreak="break-all">
+                {currentTrack.name}
+              </Text>
+              <SecondaryText as="div" fontSize="xs" noOfLines={1} wordBreak="break-all">
+                {currentTrack.artists[0].name}
+              </SecondaryText>
+            </Stack>
+            <IconButton
+              role="checkbox"
+              aria-label="toggle saved"
+              aria-checked={isSavedTrack}
+              size="sm"
+              icon={
+                <Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="xl" />
+              }
+              onClick={toggleIsSavedTrack}
+              variant="ghost"
+              color={isSavedTrack ? "green.600" : undefined}
+            />
+          </>
+        )}
       </HStack>
       <Box width="40%">
         <VStack>
@@ -112,58 +121,49 @@ export const LargerController: VFC = () => {
               role="checkbox"
               aria-label="toggle shuffle"
               aria-checked={shuffleState ?? "mixed"}
+              isDisabled={!playerIsActive}
               variant="ghost"
               size="sm"
               color={shuffleState ? "green.600" : undefined}
               icon={<Icon fontSize="xl" as={MdShuffle} />}
-              onClick={() => spotifyClient.setShuffle(!shuffleState)}
+              onClick={toggleShuffleState}
             />
             <IconButton
               aria-label="skip previous"
+              isDisabled={!playerIsActive}
               size="sm"
               icon={<Icon as={MdSkipPrevious} fontSize="2xl" />}
-              onClick={() => spotifyPlayer?.previousTrack()}
+              onClick={skipToPrevious}
               variant="ghost"
             />
             <IconButton
               aria-label="toggle play"
-              icon={
-                <Icon as={playbackState?.paused ? MdPlayArrow : MdPause} fontSize="3xl" />
-              }
-              onClick={() => spotifyPlayer?.togglePlay()}
+              isDisabled={!playerIsActive}
+              icon={<Icon as={isPlaying ? MdPause : MdPlayArrow} fontSize="3xl" />}
+              onClick={togglePlay}
               variant="ghost"
             />
             <IconButton
               aria-label="skip next"
+              isDisabled={!playerIsActive}
               size="sm"
               icon={<Icon as={MdSkipNext} fontSize="2xl" />}
-              onClick={() => spotifyPlayer?.nextTrack()}
+              onClick={skipToNext}
               variant="ghost"
             />
             <IconButton
-              role=""
-              aria-label="toggle shuffle"
-              aria-checked={playbackState?.shuffle ?? "mixed"}
+              aria-label="change repeat mode"
+              isDisabled={!playerIsActive}
               variant="ghost"
               size="sm"
-              color={
-                playbackState?.repeat_mode !== REPEAT_MODES.off ? "green.600" : undefined
-              }
+              color={repeatMode !== "off" ? "green.600" : undefined}
               icon={
                 <Icon
                   fontSize="xl"
-                  as={
-                    playbackState?.repeat_mode === REPEAT_MODES.track
-                      ? MdRepeatOne
-                      : MdRepeat
-                  }
+                  as={repeatMode === "track" ? MdRepeatOne : MdRepeat}
                 />
               }
-              onClick={() =>
-                spotifyClient.setRepeat(
-                  getNextRepeatMode(playbackState?.repeat_mode ?? 0),
-                )
-              }
+              onClick={changeRepeatMode}
             />
           </HStack>
           <WithPlaybackState
@@ -187,25 +187,6 @@ export const LargerController: VFC = () => {
       </HStack>
     </HStack>
   );
-};
-
-const REPEAT_MODES = {
-  off: 0,
-  context: 1,
-  track: 2,
-} as const;
-
-const REPEAT_MODES_STRING = {
-  0: "off",
-  1: "context",
-  2: "track",
-} as const;
-
-const getNextRepeatMode = (
-  currentMode: Spotify.PlaybackState["repeat_mode"],
-): SpotifyApi.PlaybackRepeatState => {
-  const next = ((currentMode + 1) % 3) as Spotify.PlaybackState["repeat_mode"];
-  return REPEAT_MODES_STRING[next];
 };
 
 const DevicesPopoverContent: VFC<{ isOpen: boolean }> = ({ isOpen }) => {
@@ -243,7 +224,8 @@ const DevicesPopoverContent: VFC<{ isOpen: boolean }> = ({ isOpen }) => {
 const VolumeSeekBar: VFC = () => {
   const spotifyPlayer = useSpotifyPlayer();
   const playbackState = usePlaybackState();
-  const { data = 0.5, mutate } = useSWR([playbackState], () =>
+
+  const { data = 0, mutate } = useSWR(["PlaybackVolume", playbackState], () =>
     spotifyPlayer?.getVolume(),
   );
 
@@ -256,11 +238,21 @@ const VolumeSeekBar: VFC = () => {
   );
 
   const beforeMuteRef = useRef<number>();
+  const toggleMute = useCallback(() => {
+    if (beforeMuteRef.current === undefined) {
+      setVolume(0);
+      beforeMuteRef.current = data;
+    } else {
+      setVolume(beforeMuteRef.current);
+      beforeMuteRef.current = undefined;
+    }
+  }, [data, setVolume]);
 
   return (
     <HStack spacing="1" minW="40">
       <IconButton
         aria-label="toggle mute"
+        isDisabled={!playbackState}
         size="sm"
         variant="ghost"
         icon={
@@ -277,18 +269,11 @@ const VolumeSeekBar: VFC = () => {
             }
           />
         }
-        onClick={() => {
-          if (beforeMuteRef.current === undefined) {
-            setVolume(0);
-            beforeMuteRef.current = data;
-          } else {
-            setVolume(beforeMuteRef.current);
-            beforeMuteRef.current = undefined;
-          }
-        }}
+        onClick={toggleMute}
       />
       <Slider
         aria-label="seek playback"
+        isDisabled={!playbackState}
         size="sm"
         colorScheme="green"
         value={data}
