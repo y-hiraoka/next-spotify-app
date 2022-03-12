@@ -1,29 +1,41 @@
 import { useCallback } from "react";
+import { usePlaybackState, usePlayerDevice } from "react-spotify-web-playback-sdk";
 import { useMyCurrentPlaybackState } from "./spotify-api";
 import { useSpotifyClient } from "./spotify-client";
 
 export const usePlayContextURI = (uri: string) => {
   const spotifyClient = useSpotifyClient();
-  const { data: playbackState, mutate: mutatePlayback } = useMyCurrentPlaybackState([]);
+  const { data: myCurrentPlaybackState, mutate: mutatePlayback } =
+    useMyCurrentPlaybackState([]);
+
+  const playbackState = usePlaybackState();
+  const thisDevice = usePlayerDevice();
+
+  const playerIsActive = playbackState !== null || !!myCurrentPlaybackState;
 
   const isPlayingContextURI =
-    !!playbackState?.is_playing && playbackState.context?.uri === uri;
+    !!myCurrentPlaybackState?.is_playing && myCurrentPlaybackState.context?.uri === uri;
 
   const togglePlayContextURI = useCallback(async () => {
     if (isPlayingContextURI) {
       await spotifyClient.pause();
-    } else if (playbackState?.context?.uri !== uri) {
-      await spotifyClient.play({ context_uri: uri });
+    } else if (myCurrentPlaybackState?.context?.uri !== uri) {
+      await spotifyClient.play({
+        device_id: playerIsActive ? undefined : thisDevice?.device_id,
+        context_uri: uri,
+      });
     } else {
       await spotifyClient.play();
     }
     mutatePlayback();
   }, [
-    uri,
     isPlayingContextURI,
+    myCurrentPlaybackState?.context?.uri,
+    uri,
     mutatePlayback,
-    playbackState?.context?.uri,
     spotifyClient,
+    playerIsActive,
+    thisDevice?.device_id,
   ]);
 
   return { isPlayingContextURI, togglePlayContextURI };
