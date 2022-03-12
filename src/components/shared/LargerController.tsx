@@ -41,7 +41,8 @@ import {
 } from "react-icons/md";
 import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
 import useSWR from "swr";
-import { useMyCurrentPlaybackState, useMyDevices } from "../../hooks/spotify-api";
+import { useMyDevices } from "../../hooks/spotify-api";
+import { useIsomorphicCurrentTrack } from "../../hooks/useIsomorphicCurrentTrack";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
 import { usePlayerController } from "../../hooks/usePlayerController";
 import { formatDurationMS } from "../../lib/formatDurationMS";
@@ -51,11 +52,7 @@ import { SecondaryText } from "./SecondaryText";
 import { WithPlaybackState } from "./WithPlaybackState";
 
 export const LargerController: VFC = () => {
-  const playbackState = usePlaybackState();
-  const { data: myCurrentPlaybackState } = useMyCurrentPlaybackState([]);
-
-  const currentTrack =
-    playbackState?.track_window.current_track ?? myCurrentPlaybackState?.item;
+  const currentTrack = useIsomorphicCurrentTrack();
 
   const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
 

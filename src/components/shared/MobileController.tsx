@@ -20,54 +20,48 @@ import {
   Skeleton,
   SkeletonText,
 } from "@chakra-ui/react";
-import { Suspense, useEffect, VFC } from "react";
+import { useEffect, VFC } from "react";
 import {
   MdDevices,
   MdFavorite,
   MdFavoriteBorder,
   MdPause,
   MdPlayArrow,
+  MdRepeat,
+  MdRepeatOne,
   MdShuffle,
   MdSkipNext,
   MdSkipPrevious,
 } from "react-icons/md";
-import { usePlaybackState, useSpotifyPlayer } from "react-spotify-web-playback-sdk";
+import { usePlaybackState } from "react-spotify-web-playback-sdk";
 import { useWindowSize } from "react-use";
 import { useMyDevices } from "../../hooks/spotify-api";
-import { useSpotifyClient } from "../../hooks/spotify-client";
+import { useIsomorphicCurrentTrack } from "../../hooks/useIsomorphicCurrentTrack";
 import { useIsSavedTrack } from "../../hooks/useIsSavedTrack";
-import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
+import { usePlayerController } from "../../hooks/usePlayerController";
 import { formatDurationMS } from "../../lib/formatDurationMS";
 import { MyDevices } from "./MyDevices";
 import { PlaybackSeekBar } from "./PlaybackSeekBar";
+import { SecondaryText } from "./SecondaryText";
 import { WithPlaybackState } from "./WithPlaybackState";
 
 export const MobileController: VFC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const playbackState = usePlaybackState();
 
   return (
-    playbackState && (
-      <Box p="2" width="full" position="relative">
-        <Suspense fallback={<ControllerBarFallback />}>
-          <Box
-            as="button"
-            position="absolute"
-            top={0}
-            left={0}
-            w="full"
-            h="full"
-            onClick={onOpen}
-          />
-          <ControllerBar />
-          <ControllerDrawer
-            isOpen={isOpen}
-            onClose={onClose}
-            playbackState={playbackState}
-          />
-        </Suspense>
-      </Box>
-    )
+    <Box p="2" width="full" position="relative">
+      <Box
+        as="button"
+        position="absolute"
+        top={0}
+        left={0}
+        w="full"
+        h="full"
+        onClick={onOpen}
+      />
+      <ControllerBar />
+      <ControllerDrawer isOpen={isOpen} onClose={onClose} />
+    </Box>
   );
 };
 
@@ -78,12 +72,10 @@ const ControllerBar: VFC = () => {
     onClose: onCloseDevicesDrawer,
   } = useDisclosure();
 
-  const playbackState = usePlaybackState();
-  const currentTrack = playbackState?.track_window.current_track;
-
-  const spotifyPlayer = useSpotifyPlayer();
-
+  const currentTrack = useIsomorphicCurrentTrack();
   const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
+
+  const { playerIsActive, isPlaying, togglePlay } = usePlayerController();
 
   return (
     <>
@@ -93,13 +85,15 @@ const ControllerBar: VFC = () => {
           p="2"
           boxShadow="lg"
           spacing="3">
-          <Image
-            src={currentTrack?.album.images[0].url}
-            alt={currentTrack?.album.name}
-            width="10"
-            height="10"
-            borderRadius="md"
-          />
+          {currentTrack && (
+            <Image
+              src={currentTrack.album.images[0].url}
+              alt={currentTrack.album.name}
+              width="10"
+              height="10"
+              borderRadius="md"
+            />
+          )}
           <Stack spacing="0" flex={1}>
             <Text
               as="div"
@@ -109,14 +103,9 @@ const ControllerBar: VFC = () => {
               wordBreak="break-all">
               {currentTrack?.name}
             </Text>
-            <Text
-              as="div"
-              fontSize="xs"
-              noOfLines={1}
-              wordBreak="break-all"
-              color={useSecondaryTextColor()}>
+            <SecondaryText as="div" fontSize="xs" noOfLines={1} wordBreak="break-all">
               {currentTrack?.artists[0].name}
-            </Text>
+            </SecondaryText>
           </Stack>
           <HStack spacing="1.5">
             <IconButton
@@ -129,6 +118,7 @@ const ControllerBar: VFC = () => {
               role="checkbox"
               aria-label="toggle saved"
               aria-checked={isSavedTrack}
+              isDisabled={!currentTrack}
               icon={
                 <Icon as={isSavedTrack ? MdFavorite : MdFavoriteBorder} fontSize="3xl" />
               }
@@ -138,12 +128,10 @@ const ControllerBar: VFC = () => {
             />
             <IconButton
               aria-label="toggle play"
-              icon={
-                <Icon as={playbackState?.paused ? MdPlayArrow : MdPause} fontSize="3xl" />
-              }
-              onClick={() => spotifyPlayer?.togglePlay()}
+              isDisabled={!playerIsActive}
+              icon={<Icon as={isPlaying ? MdPause : MdPlayArrow} fontSize="3xl" />}
+              onClick={togglePlay}
               variant="ghost"
-              // color="gray.100"
             />
           </HStack>
         </HStack>
@@ -163,24 +151,27 @@ const ControllerBar: VFC = () => {
   );
 };
 
-const ControllerBarFallback: VFC = () => {
+export const MobileControllerSkeleton: VFC = () => {
   return (
-    <Box borderRadius="md" overflow="hidden">
-      <HStack
-        bgColor={useColorModeValue("gray.50", "gray.900")}
-        p="2"
-        boxShadow="lg"
-        spacing="3">
-        <Skeleton width="10" height="10" borderRadius="md" />
-        <Stack flex={1}>
-          <SkeletonText noOfLines={1} />
-          <SkeletonText noOfLines={1} />
-        </Stack>
-        <HStack>
+    <Box p="2" width="full">
+      <Box borderRadius="md" overflow="hidden">
+        <HStack
+          bgColor={useColorModeValue("gray.50", "gray.900")}
+          p="2"
+          boxShadow="lg"
+          spacing="3">
           <Skeleton width="10" height="10" borderRadius="md" />
-          <Skeleton width="10" height="10" borderRadius="md" />
+          <Stack flex={1}>
+            <SkeletonText noOfLines={1} />
+            <SkeletonText noOfLines={1} />
+          </Stack>
+          <HStack spacing="1.5">
+            <Skeleton width="10" height="10" borderRadius="md" />
+            <Skeleton width="10" height="10" borderRadius="md" />
+            <Skeleton width="10" height="10" borderRadius="md" />
+          </HStack>
         </HStack>
-      </HStack>
+      </Box>
     </Box>
   );
 };
@@ -188,13 +179,23 @@ const ControllerBarFallback: VFC = () => {
 const ControllerDrawer: VFC<{
   isOpen: boolean;
   onClose: () => void;
-  playbackState: Spotify.PlaybackState;
-}> = ({ isOpen, onClose, playbackState }) => {
-  const currentTrack = playbackState.track_window.current_track;
-  const spotifyPlayer = useSpotifyPlayer();
-  const spotifyClient = useSpotifyClient();
+}> = ({ isOpen, onClose }) => {
+  const playbackState = usePlaybackState();
+  const currentTrack = useIsomorphicCurrentTrack();
   const { isSavedTrack, toggleIsSavedTrack } = useIsSavedTrack(currentTrack?.id);
   const { height } = useWindowSize();
+
+  const {
+    playerIsActive,
+    isPlaying,
+    togglePlay,
+    skipToNext,
+    skipToPrevious,
+    repeatMode,
+    changeRepeatMode,
+    shuffleState,
+    toggleShuffleState,
+  } = usePlayerController();
 
   return (
     <Drawer
@@ -212,30 +213,50 @@ const ControllerDrawer: VFC<{
             noOfLines={1}
             wordBreak="break-all"
             paddingRight="6">
-            {playbackState.context.metadata.context_description}
+            {playbackState?.context.metadata.context_description}
           </Text>
         </DrawerHeader>
         <DrawerBody>
           <Center h="full" maxH="full">
             <Box h="full" maxW="96" maxH="full">
-              <Image
-                w="full"
-                h="full"
-                objectFit="contain"
-                src={currentTrack.album.images[0].url}
-                alt={currentTrack.album.name}
-              />
+              {currentTrack && (
+                <Image
+                  w="full"
+                  h="full"
+                  objectFit="contain"
+                  src={currentTrack.album.images[0].url}
+                  alt={currentTrack.album.name}
+                />
+              )}
             </Box>
           </Center>
         </DrawerBody>
         <DrawerFooter>
           <Stack w="full">
-            <Heading as="h1" fontSize="2xl">
-              {currentTrack.name}
-            </Heading>
-            <Heading as="h2" noOfLines={1} fontSize="lg">
-              {currentTrack.artists[0].name}
-            </Heading>
+            <HStack>
+              <Box flex={1}>
+                <Heading as="h1" fontSize="2xl">
+                  {currentTrack?.name}
+                </Heading>
+                <SecondaryText as="h2" noOfLines={1}>
+                  {currentTrack?.artists[0].name}
+                </SecondaryText>
+              </Box>
+              <IconButton
+                role="checkbox"
+                aria-label="toggle saved"
+                aria-checked={isSavedTrack}
+                icon={
+                  <Icon
+                    as={isSavedTrack ? MdFavorite : MdFavoriteBorder}
+                    fontSize="3xl"
+                  />
+                }
+                color={isSavedTrack ? "green.600" : undefined}
+                onClick={toggleIsSavedTrack}
+                variant="ghost"
+              />
+            </HStack>
             <WithPlaybackState
               render={(state) => (
                 <Box width="full">
@@ -254,17 +275,12 @@ const ControllerDrawer: VFC<{
             <HStack justifyContent="space-between" w="full">
               <IconButton
                 role="checkbox"
-                aria-label="toggle saved"
-                aria-checked={isSavedTrack}
-                icon={
-                  <Icon
-                    as={isSavedTrack ? MdFavorite : MdFavoriteBorder}
-                    fontSize="3xl"
-                  />
-                }
-                color={isSavedTrack ? "green.600" : undefined}
-                onClick={toggleIsSavedTrack}
+                aria-label="toggle shuffle"
+                aria-checked={shuffleState ?? "mixed"}
                 variant="ghost"
+                color={shuffleState ? "green.600" : undefined}
+                icon={<Icon fontSize="3xl" as={MdShuffle} />}
+                onClick={toggleShuffleState}
               />
               <HStack>
                 <IconButton
@@ -273,20 +289,15 @@ const ControllerDrawer: VFC<{
                   variant="ghost"
                   size="lg"
                   icon={<Icon fontSize="3xl" as={MdSkipPrevious} />}
-                  onClick={() => spotifyPlayer?.previousTrack()}
+                  onClick={skipToPrevious}
                 />
                 <IconButton
                   aria-label="toggle play"
                   borderRadius="full"
                   height="16"
                   width="16"
-                  icon={
-                    <Icon
-                      fontSize="4xl"
-                      as={playbackState.paused ? MdPlayArrow : MdPause}
-                    />
-                  }
-                  onClick={() => spotifyPlayer?.togglePlay()}
+                  icon={<Icon fontSize="4xl" as={isPlaying ? MdPause : MdPlayArrow} />}
+                  onClick={togglePlay}
                 />
                 <IconButton
                   aria-label="skip next"
@@ -294,17 +305,22 @@ const ControllerDrawer: VFC<{
                   variant="ghost"
                   size="lg"
                   icon={<Icon fontSize="3xl" as={MdSkipNext} />}
-                  onClick={() => spotifyPlayer?.nextTrack()}
+                  onClick={skipToNext}
                 />
               </HStack>
               <IconButton
-                role="checkbox"
-                aria-label="toggle shuffle"
-                aria-checked={playbackState.shuffle}
+                aria-label="change repeat mode"
+                isDisabled={!playerIsActive}
                 variant="ghost"
-                color={playbackState.shuffle ? "green.600" : undefined}
-                icon={<Icon fontSize="3xl" as={MdShuffle} />}
-                onClick={() => spotifyClient.setShuffle(!playbackState.shuffle)}
+                size="sm"
+                color={repeatMode !== "off" ? "green.600" : undefined}
+                icon={
+                  <Icon
+                    fontSize="3xl"
+                    as={repeatMode === "track" ? MdRepeatOne : MdRepeat}
+                  />
+                }
+                onClick={changeRepeatMode}
               />
             </HStack>
           </Stack>

@@ -3,7 +3,7 @@ import { Suspense, VFC } from "react";
 import { useIsMobileSize } from "../../hooks/useIsMobileSize";
 import { BottomNavigation } from "./BottomNavigation";
 import { LargerController, LargerControllerSkeleton } from "./LargerController";
-import { MobileController } from "./MobileController";
+import { MobileController, MobileControllerSkeleton } from "./MobileController";
 
 export const ResponsiveBottom: VFC = () => {
   const isMobile = useIsMobileSize();
@@ -12,7 +12,9 @@ export const ResponsiveBottom: VFC = () => {
     return (
       <Box position="relative">
         <Box position="absolute" bottom="100%" w="full">
-          <MobileController />
+          <Suspense fallback={<MobileControllerSkeleton />}>
+            <MobileController />
+          </Suspense>
         </Box>
         <BottomNavigation />
       </Box>

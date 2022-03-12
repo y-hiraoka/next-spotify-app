@@ -4,7 +4,6 @@ import { MdSpeaker, MdSmartphone, MdComputer } from "react-icons/md";
 import { usePlayerDevice } from "react-spotify-web-playback-sdk";
 import { useMyDevices } from "../../hooks/spotify-api";
 import { useSpotifyClient } from "../../hooks/spotify-client";
-import { useHoveredBgColor } from "../../hooks/useHoveredBgColor";
 import { useSecondaryTextColor } from "../../hooks/useSecondaryTextColor";
 
 export const MyDevices: VFC = () => {
@@ -43,7 +42,7 @@ const Device: VFC<{
       p="2"
       color={device.is_active ? "green.600" : undefined}
       textAlign="inherit"
-      _hover={{ bgColor: useHoveredBgColor() }}>
+      _hover={{ bgColor: "blackAlpha.200" }}>
       <Center>
         <Icon
           as={

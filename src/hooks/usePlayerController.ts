@@ -48,11 +48,14 @@ export function usePlayerController() {
     ? REPEAT_MODES_MAP[playbackState.repeat_mode]
     : myCurrentPlaybackState?.repeat_state ?? "off";
 
-  const changeRepeatMode = useCallback(() => {
-    spotifyClient.setRepeat(
-      repeatMode === "off" ? "context" : repeatMode === "context" ? "track" : "off",
+  const changeRepeatMode = useCallback(async () => {
+    const nextRepeatMode =
+      repeatMode === "off" ? "context" : repeatMode === "context" ? "track" : "off";
+    await spotifyClient.setRepeat(nextRepeatMode);
+    mutatePlaybackState((prev) =>
+      prev ? { ...prev, repeat_state: nextRepeatMode } : undefined,
     );
-  }, [repeatMode, spotifyClient]);
+  }, [mutatePlaybackState, repeatMode, spotifyClient]);
 
   const shuffleState = playbackState?.shuffle ?? myCurrentPlaybackState?.shuffle_state;
   const toggleShuffleState = useCallback(async () => {
