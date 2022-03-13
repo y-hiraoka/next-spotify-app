@@ -41,7 +41,7 @@ export const SideNavigation: VFC = () => {
   return (
     <Box h="full" w="60" bgColor={useColorModeValue(undefined, "gray.900")} p="5">
       <NextLink href={pagesPath.$url()} passHref>
-        <Box as="a">
+        <HStack as="a">
           <Image
             src={useColorModeValue(
               staticPath.assets.Spotify_Logo_RGB_Black_png,
@@ -51,7 +51,10 @@ export const SideNavigation: VFC = () => {
             w="full"
             maxW="28"
           />
-        </Box>
+          <Text as="span" fontWeight="bold">
+            Clone
+          </Text>
+        </HStack>
       </NextLink>
       <Stack marginTop="8" spacing="4">
         <NavigationLink
